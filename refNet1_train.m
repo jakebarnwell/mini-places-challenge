@@ -11,8 +11,7 @@ opts.expDir = fullfile('data', 'refNet1') ;
 opts.train.numEpochs = numel(opts.train.learningRate) ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
-% Need to update this with directory of data
-opts.dataDir = fullfile('data','images') ;
+opts.dataDir = fullfile('images', 'train') ;
 opts.imdbPath = fullfile(opts.expDir, 'imdb.mat');
 opts.whitenData = true ;
 opts.contrastNormalization = true ;
@@ -57,24 +56,26 @@ function [im, labels] = getBatch(imdb, batch)
 im = imdb.images.data(:,:,:,batch) ;
 labels = imdb.images.labels(1,batch) ;
 if rand > 0.5, im=fliplr(im) ; end
+end
 
 % --------------------------------------------------------------------
 function imdb = getChallengeImdb(opts)
 % --------------------------------------------------------------------
-% Preapre the imdb structure, returns image data with mean image subtracted
+% Prepare the imdb structure, returns image data with mean image subtracted
 % Need to update with path
-unpackPath = fullfile(opts.dataDir, 'cifar-10-batches-mat');
-files = [arrayfun(@(n) sprintf('data_batch_%d.mat', n), 1:5, 'UniformOutput', false) ...
-  {'test_batch.mat'}];
-files = cellfun(@(fn) fullfile(unpackPath, fn), files, 'UniformOutput', false);
-file_set = uint8([ones(1, 5), 3]);
 
-data = cell(1, numel(files));
-labels = cell(1, numel(files));
-sets = cell(1, numel(files));
-for fi = 1:numel(files)
-  fd = load(files{fi}) ;
-  data{fi} = permute(reshape(fd.data',32,32,3,[]),[2 1 3 4]) ;
+img_paths = getAllFiles(opts.dataDir);
+% We can do this same thing with the xml data stuff later
+num_imgs = length(img_paths);
+
+data = cell(1, num_imgs);
+labels = cell(1, num_imgs);
+sets = cell(1, num_imgs);
+
+for i = 1:numel(num_imgs)
+  img = imread(img_paths(i)) ;
+  data{i} = img;
+%   data{i} = permute(reshape(fd.data',32,32,3,[]),[2 1 3 4]) ;
   labels{fi} = fd.labels' + 1; % Index from 1
   sets{fi} = repmat(file_set(fi), size(labels{fi}));
 end
@@ -117,3 +118,26 @@ imdb.images.labels = single(cat(2, labels{:})) ;
 imdb.images.set = set;
 imdb.meta.sets = {'train', 'val', 'test'} ;
 imdb.meta.classes = clNames.label_names;
+
+end
+
+% Searches recursively through all subdirectories of a given directory, 
+% collecting a list of all file paths it finds
+function fileList = getAllFiles(dirName)
+
+  dirData = dir(dirName);      %# Get the data for the current directory
+  dirIndex = [dirData.isdir];  %# Find the index for directories
+  fileList = {dirData(~dirIndex).name}';  %'# Get a list of the files
+  if ~isempty(fileList)
+    fileList = cellfun(@(x) fullfile(dirName,x),...  %# Prepend path to files
+                       fileList,'UniformOutput',false);
+  end
+  subDirs = {dirData(dirIndex).name};  %# Get a list of the subdirectories
+  validIndex = ~ismember(subDirs,{'.','..'});  %# Find index of subdirectories
+                                               %#   that are not '.' or '..'
+  for iDir = find(validIndex)                  %# Loop over valid subdirectories
+    nextDir = fullfile(dirName,subDirs{iDir});    %# Get the subdirectory path
+    fileList = [fileList; getAllFiles(nextDir)];  %# Recursively call getAllFiles
+  end
+
+end
