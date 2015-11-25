@@ -1,18 +1,23 @@
 function [net, info] = refNet1_train(varargin)
 % Training refNet1 CNN
 
-% Need to uncomment this but this is b/c too lazy to move things around
-% run(fullfile(fileparts(mfilename('fullpath')), ...
-%   '..', 'matlab', 'vl_setupnn.m')) ;
+run(fullfile(fileparts(mfilename('fullpath')), ...
+  'matconvnet', 'matlab', 'vl_setupnn.m')) ;
+
+opts.modelType = 'refNet1_train';
+[opts, varargin] = vl_argparse(opts, varargin) ;
+
+opts.train.learningRate = 0.001 ; % not sure what should have here
+opts.train.weightDecay = 0.001 ; % not sure what should have here
 
 % Need to update with location of the data
-opts.expDir = fullfile('data', 'refNet1') ;
+opts.expDir = fullfile('data') ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
 opts.train.numEpochs = numel(opts.train.learningRate) ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
-opts.dataDir = fullfile('images', 'train') ;
+opts.dataDir = fullfile(opts.expDir, 'images', 'train');
 opts.imdbPath = fullfile(opts.expDir, 'imdb.mat');
 opts.whitenData = true ;
 opts.contrastNormalization = true ;
@@ -22,7 +27,6 @@ opts.train.continue = true ;
 opts.train.gpus = [] ; % probably want to use this, ask for what should put here
 % Jake, this is where you put in the GPU stuff
 
-opts.train.learningRate = 0.001 ; % not sure what should have here
 opts.train.expDir = opts.expDir ;
 opts = vl_argparse(opts, varargin) ;
 
@@ -48,6 +52,8 @@ net = sample_refNet_initial();
     opts.train, ...
     'val', find(imdb.images.set == 3)) ;
 
+%     'val', find(imdb.images.set == 3)) ;
+
 % Saving the trained CNN 
 save sample_train.mat net info
 
@@ -67,14 +73,14 @@ function imdb = getChallengeImdb(opts)
 
 img_paths = getAllFiles(opts.dataDir);
 % We can do this same thing with the xml data stuff later
-num_imgs = length(img_paths);
+num_imgs = length(img_paths)
 
 data = cell(1, num_imgs);
 labels = cell(1, num_imgs);
 sets = cell(1, num_imgs);
 
 for i = 1:numel(num_imgs)
-  data{i} = imread(img_paths(i));
+  data{i} = imread(char(img_paths(i)));
 %   data{i} = permute(reshape(fd.data',32,32,3,[]),[2 1 3 4]) ;
 %   labels{fi} = fd.labels' + 1; % Index from 1
 %   sets{fi} = repmat(file_set(fi), size(labels{fi}));
