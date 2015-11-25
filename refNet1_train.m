@@ -1,8 +1,9 @@
 function [net, info] = refNet1_train(varargin)
 % Training refNet1 CNN
 
-run(fullfile(fileparts(mfilename('fullpath')), ...
-  '..', 'matlab', 'vl_setupnn.m')) ;
+% Need to uncomment this but this is b/c too lazy to move things around
+% run(fullfile(fileparts(mfilename('fullpath')), ...
+%   '..', 'matlab', 'vl_setupnn.m')) ;
 
 % Need to update with location of the data
 opts.expDir = fullfile('data', 'refNet1') ;
@@ -73,19 +74,18 @@ labels = cell(1, num_imgs);
 sets = cell(1, num_imgs);
 
 for i = 1:numel(num_imgs)
-  img = imread(img_paths(i)) ;
-  data{i} = img;
+  data{i} = imread(img_paths(i));
 %   data{i} = permute(reshape(fd.data',32,32,3,[]),[2 1 3 4]) ;
-  labels{fi} = fd.labels' + 1; % Index from 1
-  sets{fi} = repmat(file_set(fi), size(labels{fi}));
+%   labels{fi} = fd.labels' + 1; % Index from 1
+%   sets{fi} = repmat(file_set(fi), size(labels{fi}));
 end
 
-set = cat(2, sets{:});
-data = single(cat(4, data{:}));
+% set = cat(2, sets{:});
+% data = single(cat(4, data{:}));
 
-% remove mean in any case
-dataMean = mean(data(:,:,:,set == 1), 4);
-data = bsxfun(@minus, data, dataMean);
+% % remove mean in any case
+% dataMean = mean(data(:,:,:,set == 1), 4);
+% data = bsxfun(@minus, data, dataMean);
 
 % Add in these later to improve
 % % normalize by image mean and std as suggested in `An Analysis of
@@ -111,13 +111,13 @@ data = bsxfun(@minus, data, dataMean);
 %   data = reshape(z, 32, 32, 3, []) ;
 % end
 
-clNames = load(fullfile(unpackPath, 'batches.meta.mat'));
+% clNames = load(fullfile(unpackPath, 'batches.meta.mat'));
 
 imdb.images.data = data ;
-imdb.images.labels = single(cat(2, labels{:})) ;
-imdb.images.set = set;
+% imdb.images.labels = single(cat(2, labels{:})) ;
+% imdb.images.set = set;
 imdb.meta.sets = {'train', 'val', 'test'} ;
-imdb.meta.classes = clNames.label_names;
+% imdb.meta.classes = clNames.label_names;
 
 end
 
@@ -139,5 +139,5 @@ function fileList = getAllFiles(dirName)
     nextDir = fullfile(dirName,subDirs{iDir});    %# Get the subdirectory path
     fileList = [fileList; getAllFiles(nextDir)];  %# Recursively call getAllFiles
   end
-
+end
 end
