@@ -30,6 +30,9 @@ opts.train.gpus = [] ; % probably want to use this, ask for what should put here
 opts.train.expDir = opts.expDir ;
 opts = vl_argparse(opts, varargin) ;
 
+categories = readtable(fullfile(fileparts(mfilename('fullpath')), ...
+  'development_kit', 'data', 'categories.txt'),'categories.txt', 'Delimiter',' ');
+
 % --------------------------------------------------------------------
 %                                               Prepare data and model
 % --------------------------------------------------------------------
@@ -52,8 +55,6 @@ net = sample_refNet_initial();
     opts.train, ...
     'val', find(imdb.images.set == 3)) ;
 
-%     'val', find(imdb.images.set == 3)) ;
-
 % Saving the trained CNN 
 save sample_train.mat net info
 
@@ -73,7 +74,7 @@ function imdb = getChallengeImdb(opts)
 
 img_paths = getAllFiles(opts.dataDir);
 % We can do this same thing with the xml data stuff later
-num_imgs = length(img_paths)
+num_imgs = length(img_paths);
 
 data = cell(1, num_imgs);
 labels = cell(1, num_imgs);
@@ -83,10 +84,14 @@ for i = 1:numel(num_imgs)
   data{i} = imread(char(img_paths(i)));
 %   data{i} = permute(reshape(fd.data',32,32,3,[]),[2 1 3 4]) ;
 %   labels{fi} = fd.labels' + 1; % Index from 1
-%   sets{fi} = repmat(file_set(fi), size(labels{fi}));
-end
 
-% set = cat(2, sets{:});
+  sets{fi} = 1; % for the test set this should be set to 3?
+end
+% set needs to eventually be (I think) a 1 x 110k matrix
+% where the first 100k are 1's (meaning that we have 100k
+% training images) and the last 10 are 3's or 2's
+% (meaning we have 10k validation/test images)
+set = cat(2, sets{:});
 % data = single(cat(4, data{:}));
 
 % % remove mean in any case
@@ -121,7 +126,7 @@ end
 
 imdb.images.data = data ;
 % imdb.images.labels = single(cat(2, labels{:})) ;
-% imdb.images.set = set;
+imdb.images.set = set;
 imdb.meta.sets = {'train', 'val', 'test'} ;
 % imdb.meta.classes = clNames.label_names;
 
