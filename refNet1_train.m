@@ -4,6 +4,51 @@ function [net, info] = refNet1_train(varargin)
 run(fullfile(fileparts(mfilename('fullpath')), ...
   'matconvnet', 'matlab', 'vl_setupnn.m')) ;
 
+opts.dataDir = fullfile('data','ILSVRC2012') ;
+opts.modelType = 'refNet1';
+opts.networkType = 'simplenn';
+opts.batchNormalization = false ;
+opts.weightInitMethod = 'gaussian' ;
+[opts, varargin] = vl_argparse(opts, varargin) ;
+
+sfx = opts.modelType ;
+opts.expDir = fullfile('data', sprintf('places', ...
+                                       sfx, opts.networkType)) ;
+[opts, varargin] = vl_argparse(opts, varargin) ;
+
+opts.numFetchThreads = 12 ;
+opts.lite = false ;
+opts.imdbPath = fullfile(opts.expDir, 'imdb.mat');
+opts.train.batchSize = 256 ;
+opts.train.numSubBatches = 1 ;
+opts.train.continue = true ;
+opts.train.gpus = [] ; % jake you'll want to change this
+opts.train.prefetch = true ;
+opts.train.sync = false ;
+opts.train.cudnn = true ;
+opts.train.expDir = opts.expDir ;
+if ~opts.batchNormalization
+  opts.train.learningRate = logspace(-2, -4, 60) ;
+else
+  opts.train.learningRate = logspace(-1, -4, 20) ;
+end
+[opts, varargin] = vl_argparse(opts, varargin) ;
+
+opts.train.numEpochs = numel(opts.train.learningRate) ;
+opts = vl_argparse(opts, varargin) ;
+
+if exist(opts.imdbPath)
+  imdb = load(opts.imdbPath) ;
+else
+  imdb = setup_data('dataDir', opts.dataDir, 'lite', opts.lite) ;
+  mkdir(opts.expDir) ;
+  save(opts.imdbPath, '-struct', 'imdb') ;
+end
+
+
+
+
+
 opts.modelType = 'refNet1_train';
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
@@ -31,7 +76,7 @@ opts.train.expDir = opts.expDir ;
 opts = vl_argparse(opts, varargin) ;
 
 categories = readtable(fullfile(fileparts(mfilename('fullpath')), ...
-  'development_kit', 'data', 'categories.txt'),'categories.txt', 'Delimiter',' ');
+  'development_kit', 'data', 'categories.txt'), 'Delimiter',' ');
 
 % --------------------------------------------------------------------
 %                                               Prepare data and model
