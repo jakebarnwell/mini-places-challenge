@@ -6,7 +6,7 @@ run(fullfile(fileparts(mfilename('fullpath')), ...
   'matconvnet', 'matlab', 'vl_setupnn.m')) ;
 
 opts.dataDir = fullfile('data') ; %Contains our images/objects etc
-opts.modelType = 'alexnet' ; %TODO change this to whatever
+opts.modelType = 'refNet1' ;
 opts.networkType = 'simplenn' ;
 opts.batchNormalization = false ;
 opts.weightInitMethod = 'gaussian' ;
@@ -56,9 +56,8 @@ end
 %                                                    Network initialization
 % -------------------------------------------------------------------------
 
-% TODO this function
-net = cnn_imagenet_init('model', opts.modelType, ...
-                        'batchNormalization', opts.batchNormalization, ...
+net = sample_refNet_initial('model', opts.modelType, ...
+			    'batchNormalization', opts.batchNormalization, ...
                         'weightInitMethod', opts.weightInitMethod) ;
 bopts = net.normalization ;
 bopts.numThreads = opts.numFetchThreads ;
@@ -99,12 +98,10 @@ fn = @(imdb,batch) getBatchSimpleNN(imdb,batch,opts) ;
 % -------------------------------------------------------------------------
 function [im,labels] = getBatchSimpleNN(imdb, batch, opts)
 % -------------------------------------------------------------------------
-%TODO images has the file paths to the images
-images = strcat([imdb.imageDir filesep], imdb.images.name(batch)) ;
-%TODO this gets the images from the filepaths?
-im = cnn_imagenet_get_batch(images, opts, ...
-                            'prefetch', nargout == 0) ;
-labels = imdb.images.label(batch) ;
+batch_indices = batch*bs+1:min(batch*bs+bs,numel(imdb.imageDirs));
+images = imdb.imageDirs(batch_indices);
+im = cnn_imagenet_get_batch(images, opts,'prefetch', true);
+labels = imdb.images.label(batch_indices) ; %TODO fix
 
 % -------------------------------------------------------------------------
 function [averageImage, rgbMean, rgbCovariance] = getImageStats(imdb, opts)
