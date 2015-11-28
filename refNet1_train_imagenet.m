@@ -52,6 +52,23 @@ else
   save(opts.imdbPath, '-struct', 'imdb') ;
 end
 
+% imdb.classes.name = {className1, className2, ...}
+% imdb.classes.description = {classDescr1, classDescr2, ...}
+% where "className" is like an ID, and "classDescr" is like 'White Tiger'
+% imdb.imageDir is the top level directory of the images, e.g. if we had
+% data/imagenet12/images/{test,train,val} then imdb.imageDir is
+% data/imagenet12/images
+% imdb.images.id is an array of unique IDs of images, e.g. [1, 2, ...]
+% imdb.images.name is a cell array of full path names (relative to
+% imageDir) to each of the images, e.g. {train/classNameA/classAimage1.JPG,
+% ...}
+% imdb.images.set is an array of the set type of the images, where 1 =
+% train, 2 = validate, 3 = test. So for example, [1 1 1 .... 2 2 2 .... 3 3
+% 3 ... ]
+% imdb.images.label is an array, where each element is the index into the
+% classes cell array that tells us to which class the image belongs. e.g.
+% [28 193 930 68 ... ]
+
 % -------------------------------------------------------------------------
 %                                                    Network initialization
 % -------------------------------------------------------------------------
