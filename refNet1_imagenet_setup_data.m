@@ -24,34 +24,42 @@ function imdb = refNet1_imagenet_setup_data(varargin)
 %    sufficient RAM is available). Reading images off disk with a
 %    sufficient speed is crucial for fast training.
 
+% This needs to be the directory containing our 'images' directory
+opts.dataDir = fullfile('data') ;
+opts.lite = false ;
 opts = vl_argparse(opts, varargin) ;
 
 % -------------------------------------------------------------------------
 %                                                  Load categories metadata
 % -------------------------------------------------------------------------
 
-d = dir(fullfile(opts.dataDir, 'objects')) ;
-d = [d dir(fullfile(opts.dataDir, 'images'))] ;
-if numel(d) == 0
-    error('Make sure that both data/images/... and data/objects/... exist');
+if numel(dir(fullfile(opts.dataDir, 'objects'))) == 0
+    error('Make sure that data/objects/... exists!');
+end
+if numel(dir(fullfile(opts.dataDir, 'images'))) == 0
+    error('Make sure that data/images/... exists!');
 end
 
-categories = readtable(fullfile(fileparts(mfilename('fullpath')), ...
-  'development_kit', 'data', 'categories.txt'), 'Delimiter',' ');
-
-cat_cell = table2cell(categories);
-
-% Note that the position of a category in the cell array is it's label
-% number
-cats = {cat_cell(1:height(categories))} ; % categories but not mapped to numbers
 % descrs = {meta.synsets(1:1000).words} ; %TODO put descrs, if we have them, here
 % In vanilla, cats is a 1x1000 cell array of all of the categories
 % (classes) ID's, e.g. n02119789, ...
 % descrs is a 1x1000 cell array of all the classes names, e.g. 'English
 % Setter', 'Siberian Husky', 'kit fox, Vulpes macrotis'
 
+
+categories = table2cell(readtable(fullfile(fileparts(mfilename('fullpath')), ...
+  'development_kit', 'data', 'categories.txt'), 'Delimiter',' ', ...
+  'ReadVariableNames', false));
+
+% Note that the position of a category in the cell array is it's label
+% number
+% cats = {cats_cell(1:height(categories))} ; % categories but not mapped to numbers
+cats = categories(:,2);
+descrs = categories(:,1);
+
+% 1xNumCategories cell array of categories
 imdb.classes.name = cats ;
-% imdb.classes.description = descrs ;
+imdb.classes.description = descrs ;
 imdb.imageDirs = getAllFiles(opts.dataDir); % This should be the full list of all image pathnames
 
 % -------------------------------------------------------------------------

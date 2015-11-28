@@ -47,7 +47,7 @@ if exist(opts.imdbPath)
   imdb = load(opts.imdbPath) ;
 else
   % TODO this function
-  imdb = cnn_imagenet_setup_data('dataDir', opts.dataDir, 'lite', opts.lite) ;
+  imdb = refNet1_imagenet_setup_data('dataDir', opts.dataDir, 'lite', opts.lite) ;
   mkdir(opts.expDir) ;
   save(opts.imdbPath, '-struct', 'imdb') ;
 end
@@ -63,8 +63,8 @@ end
 % imageDir) to each of the images, e.g. {train/classNameA/classAimage1.JPG,
 % ...}
 % imdb.images.set is an array of the set type of the images, where 1 =
-% train, 2 = validate, 3 = test. So for example, [1 1 1 .... 2 2 2 .... 3 3
-% 3 ... ]
+% train, 2 = validate, 3 = test. So it will probably look like this:
+%    [1 1 1 .... 2 2 2 .... 3 3 3 ... ]
 % imdb.images.label is an array, where each element is the index into the
 % classes cell array that tells us to which class the image belongs. e.g.
 % [28 193 930 68 ... ]
