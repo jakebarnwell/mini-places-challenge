@@ -45,6 +45,10 @@ cat_cell = table2cell(categories);
 % number
 cats = {cat_cell(1:height(categories))} ; % categories but not mapped to numbers
 % descrs = {meta.synsets(1:1000).words} ; %TODO put descrs, if we have them, here
+% In vanilla, cats is a 1x1000 cell array of all of the categories
+% (classes) ID's, e.g. n02119789, ...
+% descrs is a 1x1000 cell array of all the classes names, e.g. 'English
+% Setter', 'Siberian Husky', 'kit fox, Vulpes macrotis'
 
 imdb.classes.name = cats ;
 % imdb.classes.description = descrs ;
@@ -77,11 +81,43 @@ if numel(names) ~= 100000
 end
 
 names = strcat(['train' filesep], names) ;
+% In vanilla, names is a 1x60658 cell array of directory/imagename.JPEG
+% where directory is the directory directly containing the image. I *THINK*
+% that the directory name is typically the category ID of the enclosed
+% images, e.g. if there is a directory called n02119789, then
+% n02119789/image1.JPEG, n02119789/image2.JPG, ..., n02119789/imagek.JPEG
+% are all of the training images of class n02119789. There is presumably
+% one such directory for each of the classes.
+% The variable d loops through each of the directories (each directory has
+% multiple images in that class). d.name is the name of the directory, e.g.
+% n02119789 (the name of the category). [~,lab] = ... returns into lab the
+% index of 'cats' that d.name (the category) is, if it's in that array at
+% all. For example, if d.name = n02119789 and n02119789is the 900'th
+% element of cats, then lab=900. 
+% Hence, 'labels' is a 1x60658 array where each entry is the index/number
+% of the category that belongs to the respective image.
+
+%imdb.images.id is just a unique id for each image, 1 through whatever
+%imdb.images.set should all be 1 since these are all training images
 
 imdb.images.id = 1:numel(names) ;
 imdb.images.name = names ;
 imdb.images.set = ones(1, numel(names)) ;
 imdb.images.label = labels ;
+
+% The above pattern continues below for validation and test images. It just
+% adds those images to the end of imdb.images.id etc. So for example,
+% imdb.images.name is [classA/im1.JPG, classA/im2.JPG, ..., classA/imk.JPG,
+% classB/... , ... , ... , classZ/imK.JPG, val/valImg1.JPG,
+% val/valImg2.JPG, val/valImg3.JPG, ..., test/testImg1.JPG,
+% test/testImg2.JPG, ...]
+% The reaason that they add 1e7 to the IDs is just so offset them enough so
+% that there's no confusion about what IDs belong to what. So the training
+% images have IDs from 1 to numel(trainImages), the validation images have
+% IDs from 10000000 to 10000000+numel(valImages), the test images have IDs
+% from 20000000 to 20000000+numel(testImages). Note also that
+% imdb.images.set is 2 for validation, 3 for test, and 1 for train.
+% We probably don't have to worry about post-processing for now.
 
 % -------------------------------------------------------------------------
 %                                                         Validation images
