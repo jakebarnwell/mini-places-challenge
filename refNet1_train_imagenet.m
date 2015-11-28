@@ -14,8 +14,8 @@ opts.weightInitMethod = 'gaussian' ;
 
 sfx = opts.modelType ;
 if opts.batchNormalization, sfx = [sfx '-bnorm'] ; end
-opts.expDir = fullfile('refnet', sprintf('refnet-%s-%s', ...
-                                       sfx, opts.networkType)) ;
+opts.expDir = fullfile(opts.dataDir, 'refnet', ...
+    sprintf('refnet-%s-%s', sfx, opts.networkType)) ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
 opts.numFetchThreads = 12 ;
@@ -52,6 +52,7 @@ else
   save(opts.imdbPath, '-struct', 'imdb') ;
 end
 
+% All imdb.* fields are 1 x n (not n x 1)
 % imdb.classes.name = {className1, className2, ...}
 % imdb.classes.description = {classDescr1, classDescr2, ...}
 % where "className" is like an ID, and "classDescr" is like 'White Tiger'
