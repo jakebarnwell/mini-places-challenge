@@ -1,8 +1,11 @@
 % install MatConvNet first at http://www.vlfeat.org/matconvnet/
 
+run(fullfile(fileparts(mfilename('fullpath')), ...
+  'matconvnet', 'matlab', 'vl_setupnn.m')) ;
+
 % load pre-trained model
 load('categoryIDX.mat');
-path_model = 'refNet1-epoch-60.mat';
+path_model = 'net-epoch-60.mat';
 load([path_model]) ;
 
 % load and preprocess an image
