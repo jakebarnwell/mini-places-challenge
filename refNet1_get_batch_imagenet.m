@@ -1,4 +1,4 @@
-function imo = cnn_imagenet_get_batch(images, varargin)
+function imo = refNet1_get_batch_imagenet(images, varargin)
 % CNN_IMAGENET_GET_BATCH  Load, preprocess, and pack images for CNN evaluation
 
 opts.imageSize = [227, 227] ;

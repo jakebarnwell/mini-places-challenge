@@ -2,6 +2,9 @@ function refNet1_train_imagenet(varargin)
 % REFNET1_TRAIN_IMAGENET  Copies the style of cnn_imagenet
 %   This tries to train the miniplaces competition net
 
+addpath(fullfile('matconvnet','examples'));
+addpath(fullfile('matconvnet','matlab'));
+
 run(fullfile(fileparts(mfilename('fullpath')), ...
   'matconvnet', 'matlab', 'vl_setupnn.m')) ;
 
@@ -116,10 +119,10 @@ fn = @(imdb,batch) getBatchSimpleNN(imdb,batch,opts) ;
 % -------------------------------------------------------------------------
 function [im,labels] = getBatchSimpleNN(imdb, batch, opts)
 % -------------------------------------------------------------------------
-batch_indices = batch*bs+1:min(batch*bs+bs,numel(imdb.imageDirs));
-images = imdb.imageDirs(batch_indices);
-im = cnn_imagenet_get_batch(images, opts,'prefetch', true);
-labels = imdb.images.label(batch_indices) ; %TODO fix
+images = strcat([imdb.imageDir filesep], imdb.images.name(batch)) ;
+im = refNet1_get_batch_imagenet(images, opts, ...
+                            'prefetch', nargout == 0) ;
+labels = imdb.images.label(batch) ;
 
 % -------------------------------------------------------------------------
 function [averageImage, rgbMean, rgbCovariance] = getImageStats(imdb, opts)
@@ -131,7 +134,7 @@ fn = getBatchSimpleNNWrapper(opts) ;
 for t=1:bs:numel(train)
   batch_time = tic ;
   batch = train(t:min(t+bs-1, numel(train))) ;
-  fprintf('collecting image stats: batch starting with image %d ...', batch(1)) ;
+  fprintf('collecting image stats: batch starting with image %d ...\n', batch(1)) ;
   temp = fn(imdb, batch) ;
   z = reshape(permute(temp,[3 1 2 4]),3,[]) ;
   n = size(z,2) ;
