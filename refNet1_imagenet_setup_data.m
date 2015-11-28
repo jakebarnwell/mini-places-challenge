@@ -24,6 +24,11 @@ function imdb = refNet1_imagenet_setup_data(varargin)
 %    sufficient RAM is available). Reading images off disk with a
 %    sufficient speed is crucial for fast training.
 
+NUM_TRAINING_IMAGES = 100000;
+NUM_VAL_IMAGES = 10000;
+NUM_TEST_IMAGES = 10000;
+
+
 % This needs to be the directory containing our 'images' directory
 opts.dataDir = fullfile('data') ;
 opts.lite = false ;
@@ -40,55 +45,66 @@ if numel(dir(fullfile(opts.dataDir, 'images'))) == 0
     error('Make sure that data/images/... exists!');
 end
 
-% descrs = {meta.synsets(1:1000).words} ; %TODO put descrs, if we have them, here
 % In vanilla, cats is a 1x1000 cell array of all of the categories
 % (classes) ID's, e.g. n02119789, ...
 % descrs is a 1x1000 cell array of all the classes names, e.g. 'English
 % Setter', 'Siberian Husky', 'kit fox, Vulpes macrotis'
 
-
 categories = table2cell(readtable(fullfile(fileparts(mfilename('fullpath')), ...
   'development_kit', 'data', 'categories.txt'), 'Delimiter',' ', ...
   'ReadVariableNames', false));
 
-% Note that the position of a category in the cell array is it's label
-% number
-% cats = {cats_cell(1:height(categories))} ; % categories but not mapped to numbers
-cats = categories(:,2);
+% Category names are indexes, descrs are human-readable descriptions. Note
+% that we add 1 to each of the indexes since we want them to start at 1.
+cats = num2cell(cellfun(@(x) x+1, categories(:,2)));
 descrs = categories(:,1);
 
-% 1xNumCategories cell array of categories
+% 1xNumCategories cell array for name and description
 imdb.classes.name = cats ;
 imdb.classes.description = descrs ;
-imdb.imageDirs = getAllFiles(opts.dataDir); % This should be the full list of all image pathnames
+% This is the top-level directory of image data 
+imdb.imageDir = fullfile(opts.dataDir, 'images') ;
+% getAllFiles(opts.dataDir);
 
 % -------------------------------------------------------------------------
 %                                                           Training images
 % -------------------------------------------------------------------------
 
-fprintf('searching training images ...\n') ;
+fprintf('Searching training images ...\n') ;
 names = {} ;
 labels = {} ;
-% maybe want to iterate a level down
-for d = dir(fullfile(opts.dataDir, 'images', 'train', 'n*'))'
-  [~,lab] = ismember(d.name, cats) ;
-  ims = dir(fullfile(opts.dataDir, 'images', 'train', d.name, '*.JPG')) ;
-  names{end+1} = strcat([d.name, filesep], {ims.name}) ;
-  labels{end+1} = ones(1, numel(ims)) * lab ;
-  fprintf('.') ;
-  if mod(numel(names), 50) == 0, fprintf('\n') ; end
-  %fprintf('found %s with %d images\n', d.name, numel(ims)) ;
-end
-names = horzcat(names{:}) ;
-labels = horzcat(labels{:}) ;
 
-if numel(names) ~= 100000
-  warning('Found %d training images instead of 100,000. Dropping training set.', numel(names)) ;
+% Get image paths and classnames
+imagePaths = getAllFiles(fullfile(opts.dataDir, 'images', 'train'));
+stripper = stripDirectoryWrapper(fullfile(opts.dataDir, 'images', 'train'));
+imagePathsStripped = cellfun(@(s) stripper(s), imagePaths, 'UniformOutput', false);
+
+% Wrapper function for stripDirectory
+function fn = stripDirectoryWrapper(directory)
+    fn = @(s) stripDirectory(s, directory);
+end
+
+% Helper function to get a category and image name from a full path name
+function stripped = stripDirectory(s, directory)
+    stripped = s(numel(directory)+2:end);
+end
+
+names = imagePathsStripped;
+labels = cellfun(@(s) getLabel(s), imagePathsStripped);
+
+function lab = getLabel(imagePathStripped)
+    inds = strfind(imagePathStripped, filesep);
+    category = strcat(filesep, imagePathStripped(1:inds(end)-1));
+    [~, lab] = ismember(category, descrs);
+end
+
+if numel(names) ~= NUM_TRAINING_IMAGES;
+  warning('Found %d instead of %d training images. Dropping training set.', numel(names), NUM_TRAINING_IMAGES)
   names = {} ;
-  labels =[] ;
+  labels = [] ;
 end
 
-names = strcat(['train' filesep], names) ;
+
 % In vanilla, names is a 1x60658 cell array of directory/imagename.JPEG
 % where directory is the directory directly containing the image. I *THINK*
 % that the directory name is typically the category ID of the enclosed
@@ -131,9 +147,13 @@ imdb.images.label = labels ;
 %                                                         Validation images
 % -------------------------------------------------------------------------
 
-ims = dir(fullfile(opts.dataDir, 'images', 'val', '*.JPG')) ;
+ims = dir(fullfile(opts.dataDir, 'images', 'val', '*.jpg')) ;
 names = sort({ims.name}) ;
 labels = textread(valLabelsPath, '%d') ;
+
+
+% Just to catch my breakpoint... don't ask.....
+fodder = cellfun(@(s) stripper(s), imagePaths);
 
 if numel(ims) ~= 10e3
   warning('Found %d instead of 10,000 validation images. Dropping validation set.', numel(ims))
@@ -177,22 +197,3 @@ imdb.images.label = horzcat(imdb.images.label, labels) ;
 
 end
 
-% Searches recursively through all subdirectories of a given directory, 
-% collecting a list of all file paths it finds
-function fileList = getAllFiles(dirName)
-
-  dirData = dir(dirName);      %# Get the data for the current directory
-  dirIndex = [dirData.isdir];  %# Find the index for directories
-  fileList = {dirData(~dirIndex).name}';  %'# Get a list of the files
-  if ~isempty(fileList)
-    fileList = cellfun(@(x) fullfile(dirName,x),...  %# Prepend path to files
-                       fileList,'UniformOutput',false);
-  end
-  subDirs = {dirData(dirIndex).name};  %# Get a list of the subdirectories
-  validIndex = ~ismember(subDirs,{'.','..'});  %# Find index of subdirectories
-                                               %#   that are not '.' or '..'
-  for iDir = find(validIndex)                  %# Loop over valid subdirectories
-    nextDir = fullfile(dirName,subDirs{iDir});    %# Get the subdirectory path
-    fileList = [fileList; getAllFiles(nextDir)];  %# Recursively call getAllFiles
-  end
-end
