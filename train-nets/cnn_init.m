@@ -12,6 +12,9 @@ opts = vl_argparse(opts, varargin) ;
 
 % Define layers
 switch opts.model
+  case 'refNet1'
+    net.normalization.imageSize = [126, 126, 3] ;
+    net = refNet1(net, opts)
   case 'alexnet'
     net.normalization.imageSize = [227, 227, 3] ;
     net = alexnet(net, opts) ;
@@ -339,3 +342,43 @@ net = add_dropout(net, opts, '7') ;
 net = add_block(net, opts, '8', 1, 1, 4096, 1000, 1, 0) ;
 net.layers(end) = [] ;
 if opts.batchNormalization, net.layers(end) = [] ; end
+
+% --------------------------------------------------------------------
+function net = refNet1(net, opts)
+% 3 convnet + 1 FC + 1 softmax
+% --------------------------------------------------------------------
+%% add_block(net, opts, id, h, w, in, out, stride, pad, init_bias)
+fprintf('Initializing net refNet1')
+net.layers = {} ;
+
+net = add_block(net, opts, '1', 8, 8, 3, 64, 2, 0) ;
+net = add_norm(net, opts, '1') ;
+net.layers{end+1} = struct('type', 'pool', 'name', 'pool1', ...
+                           'method', 'max', ...
+                           'pool', [3 3], ...
+                           'stride', 2, ...
+                           'pad', 0) ;
+
+
+net = add_block(net, opts, '2', 5, 5, 32, 96, 1, 2) ;
+net = add_norm(net, opts, '2') ;
+net.layers{end+1} = struct('type', 'pool', 'name', 'pool2', ...
+                           'method', 'max', ...
+                           'pool', [3 3], ...
+                           'stride', 2, ...
+                           'pad', 0) ;
+
+net = add_block(net, opts, '3', 3, 3, 96, 128, 1, 1) ;
+net.layers{end+1} = struct('type', 'pool', 'name', 'pool5', ...
+                           'method', 'max', ...
+                           'pool', [3 3], ...
+                           'stride', 2, ...
+                           'pad', 0) ;
+
+net = add_block(net, opts, '4', 6, 6, 128, 512, 1, 0) ;
+net = add_dropout(net, opts, '4') ;
+
+net = add_block(net, opts, '5', 1, 1, 512, 100, 1, 0) ;
+net.layers(end) = [] ;
+if opts.batchNormalization, net.layers(end) = [] ; end
+

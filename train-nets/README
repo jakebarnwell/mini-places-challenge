@@ -1,0 +1,4 @@
+Each  new type of net we are making should have its own
+NETNAME_train.m and NETNAME_setup_data.m files. Additionally,
+add the initialization neural net to the cnn_init.m file, if
+applicable.
