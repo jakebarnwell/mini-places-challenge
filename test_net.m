@@ -12,7 +12,7 @@ path_model = 'net-epoch-60.mat';
 load([path_model]) ;
 
 % WHETHER RUNNING ON VAL OR TEST SET, CHANGE THIS TO CHANGE WHAT RUNNING ON
-run_on_val_set = true;
+run_on_val_set = false;
 
 if run_on_val_set
     % Run for all images in the valid set
@@ -21,6 +21,7 @@ if run_on_val_set
 
     fileID = fopen('val_results.txt','w');
     formatSpec = '%s %d %d %d %d %d\n';
+    disp('RUNNING ON VAL SET');
 else
     % Run for all images in the test set
     files = dir('data/images/test/*.jpg');
@@ -28,6 +29,7 @@ else
     
     fileID = fopen('test_results.txt','w');
     formatSpec = '%s %d %d %d %d %d\n';
+    disp('RUNNING ON TEST SET');
 end
 
 % change the last layer of CNN from softmaxloss to softmax
@@ -49,9 +51,15 @@ for file = files'
     scores = squeeze(gather(res(end).x)) ;
     [score_sort, idx_sort] = sort(scores,'descend') ;
     
-    % Write the data to the text file
-    fprintf(fileID,formatSpec,strcat('val/', file.name), idx_sort(1), ...
-        idx_sort(2), idx_sort(3), idx_sort(4), idx_sort(5));
+    if run_on_val_set
+        % Write the data to the text file
+        fprintf(fileID,formatSpec,strcat('val/', file.name), idx_sort(1), ...
+            idx_sort(2), idx_sort(3), idx_sort(4), idx_sort(5));
+    else
+        % Write the data to the text file
+        fprintf(fileID,formatSpec,strcat('test/', file.name), idx_sort(1), ...
+            idx_sort(2), idx_sort(3), idx_sort(4), idx_sort(5));
+    end
 end
 
 fclose(fileID);
