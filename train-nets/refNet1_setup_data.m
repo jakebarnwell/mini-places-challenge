@@ -1,5 +1,6 @@
 function imdb = refNet1_setup_data(varargin)
 %    Need to have repo/data/images/{train,val,test}
+%     and repo/data/objects/...
 %
 %    In order to speedup training and testing, it may be a good idea
 %    to preprocess the images to have a fixed size (e.g. 256 pixels
@@ -12,7 +13,7 @@ NUM_VAL_IMAGES = 10000;
 NUM_TEST_IMAGES = 10000;
 
 % This needs to be the directory containing our 'images' directory
-opts.dataDir = fullfile('data') ;
+opts.dataDir = fullfile('..','data') ;
 opts.lite = false ;
 opts = vl_argparse(opts, varargin) ;
 
@@ -33,7 +34,7 @@ end
 % Setter', 'Siberian Husky', 'kit fox, Vulpes macrotis'
 
 categories = table2cell(readtable(fullfile(fileparts(mfilename('fullpath')), ...
-  'development_kit', 'data', 'categories.txt'), 'Delimiter',' ', ...
+  '..','development_kit', 'data', 'categories.txt'), 'Delimiter',' ', ...
   'ReadVariableNames', false));
 
 % Category names are indexes, descrs are human-readable descriptions. Note
@@ -85,23 +86,6 @@ if numel(names) ~= NUM_TRAINING_IMAGES;
   labels = [] ;
 end
 
-
-% In vanilla, names is a 1x60658 cell array of directory/imagename.JPEG
-% where directory is the directory directly containing the image. I *THINK*
-% that the directory name is typically the category ID of the enclosed
-% images, e.g. if there is a directory called n02119789, then
-% n02119789/image1.JPEG, n02119789/image2.JPG, ..., n02119789/imagek.JPEG
-% are all of the training images of class n02119789. There is presumably
-% one such directory for each of the classes.
-% The variable d loops through each of the directories (each directory has
-% multiple images in that class). d.name is the name of the directory, e.g.
-% n02119789 (the name of the category). [~,lab] = ... returns into lab the
-% index of 'cats' that d.name (the category) is, if it's in that array at
-% all. For example, if d.name = n02119789 and n02119789is the 900'th
-% element of cats, then lab=900. 
-% Hence, 'labels' is a 1x60658 array where each entry is the index/number
-% of the category that belongs to the respective image.
-
 %imdb.images.id is just a unique id for each image, 1 through whatever
 %imdb.images.set should all be 1 since these are all training images
 
@@ -110,27 +94,13 @@ imdb.images.name = names' ;
 imdb.images.set = ones(1, numel(names)) ;
 imdb.images.label = labels' ;
 
-% The above pattern continues below for validation and test images. It just
-% adds those images to the end of imdb.images.id etc. So for example,
-% imdb.images.name is [classA/im1.JPG, classA/im2.JPG, ..., classA/imk.JPG,
-% classB/... , ... , ... , classZ/imK.JPG, val/valImg1.JPG,
-% val/valImg2.JPG, val/valImg3.JPG, ..., test/testImg1.JPG,
-% test/testImg2.JPG, ...]
-% The reaason that they add 1e7 to the IDs is just so offset them enough so
-% that there's no confusion about what IDs belong to what. So the training
-% images have IDs from 1 to numel(trainImages), the validation images have
-% IDs from 10000000 to 10000000+numel(valImages), the test images have IDs
-% from 20000000 to 20000000+numel(testImages). Note also that
-% imdb.images.set is 2 for validation, 3 for test, and 1 for train.
-% We probably don't have to worry about post-processing for now.
-
 % -------------------------------------------------------------------------
 %                                                         Validation images
 % -------------------------------------------------------------------------
 
 fprintf('Searching validation images ...\n') ;
 
-valLabelsPath = fullfile('development_kit', 'data', 'val.txt');
+valLabelsPath = fullfile('..','development_kit', 'data', 'val.txt');
 validation = table2cell(readtable(valLabelsPath, 'Delimiter', ' ', ...
     'ReadVariableNames', false));
 ims = validation(:,1);
@@ -168,7 +138,6 @@ imdb.images.id = horzcat(imdb.images.id, (1:numel(names)) + 2e7 - 1) ;
 imdb.images.name = horzcat(imdb.images.name, names) ;
 imdb.images.set = horzcat(imdb.images.set, 3*ones(1,numel(names))) ;
 imdb.images.label = horzcat(imdb.images.label, labels) ;
-
 
 end
 

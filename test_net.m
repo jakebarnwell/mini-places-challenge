@@ -12,7 +12,7 @@ path_model = 'net-epoch-60.mat';
 load([path_model]) ;
 
 % WHETHER RUNNING ON VAL OR TEST SET, CHANGE THIS TO CHANGE WHAT RUNNING ON
-run_on_val_set = false;
+run_on_val_set = true;
 
 if run_on_val_set
     % Run for all images in the valid set
