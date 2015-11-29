@@ -1,6 +1,4 @@
-function refNet1_train(varargin)
-% REFNET1_TRAIN_IMAGENET  Copies the style of cnn_imagenet
-%   This tries to train the miniplaces competition net
+function alexnet1_train(varargin)
 
 addpath(fullfile('..','matconvnet','examples'));
 addpath(fullfile('..','matconvnet','matlab'));
@@ -9,18 +7,20 @@ addpath(fullfile('..'));
 run(fullfile(fileparts(mfilename('fullpath')), ...
 	     '..','matconvnet', 'matlab', 'vl_setupnn.m')) ;
 
-% Contains our images/objects etc
+%% Change this stuff in these 2 lines:
+NETNAME = 'alexnet1'
+opts.modelType = 'alexnet' ;
+
 opts.dataDir = fullfile('..','data') ;
-opts.modelType = 'refNet1' ;
 opts.networkType = 'simplenn' ;
-opts.batchNormalization = false ;
+opts.batchNormalization = true ;
 opts.weightInitMethod = 'gaussian' ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
 sfx = opts.modelType ;
 if opts.batchNormalization, sfx = [sfx '-bnorm'] ; end
-opts.expDir = fullfile(opts.dataDir, 'refnet', ...
-    sprintf('refnet-%s-%s', sfx, opts.networkType)) ;
+opts.expDir = fullfile(opts.dataDir, NETNAME, ...
+		sprintf('%s-%s-%s', NETNAME, sfx, opts.networkType)) ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
 opts.numFetchThreads = 12 ;
