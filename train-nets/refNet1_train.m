@@ -2,13 +2,15 @@ function refNet1_train_imagenet(varargin)
 % REFNET1_TRAIN_IMAGENET  Copies the style of cnn_imagenet
 %   This tries to train the miniplaces competition net
 
-addpath(fullfile('matconvnet','examples'));
-addpath(fullfile('matconvnet','matlab'));
+addpath(fullfile('..','matconvnet','examples'));
+addpath(fullfile('..','matconvnet','matlab'));
+addpath(fullfile('..'));
 
 run(fullfile(fileparts(mfilename('fullpath')), ...
-  'matconvnet', 'matlab', 'vl_setupnn.m')) ;
+	     '..','matconvnet', 'matlab', 'vl_setupnn.m')) ;
 
-opts.dataDir = fullfile('data') ; %Contains our images/objects etc
+% Contains our images/objects etc
+opts.dataDir = fullfile('..','data') ;
 opts.modelType = 'refNet1' ;
 opts.networkType = 'simplenn' ;
 opts.batchNormalization = false ;
@@ -49,7 +51,6 @@ opts = vl_argparse(opts, varargin) ;
 if exist(opts.imdbPath)
   imdb = load(opts.imdbPath) ;
 else
-  % TODO this function
   imdb = refNet1_setup_data('dataDir', opts.dataDir, 'lite', opts.lite) ;
   mkdir(opts.expDir) ;
   save(opts.imdbPath, '-struct', 'imdb') ;

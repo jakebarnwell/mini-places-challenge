@@ -12,7 +12,7 @@ NUM_VAL_IMAGES = 10000;
 NUM_TEST_IMAGES = 10000;
 
 % This needs to be the directory containing our 'images' directory
-opts.dataDir = fullfile('data') ;
+opts.dataDir = fullfile('..','data') ;
 opts.lite = false ;
 opts = vl_argparse(opts, varargin) ;
 
@@ -33,7 +33,7 @@ end
 % Setter', 'Siberian Husky', 'kit fox, Vulpes macrotis'
 
 categories = table2cell(readtable(fullfile(fileparts(mfilename('fullpath')), ...
-  'development_kit', 'data', 'categories.txt'), 'Delimiter',' ', ...
+  '..','development_kit', 'data', 'categories.txt'), 'Delimiter',' ', ...
   'ReadVariableNames', false));
 
 % Category names are indexes, descrs are human-readable descriptions. Note
@@ -130,7 +130,7 @@ imdb.images.label = labels' ;
 
 fprintf('Searching validation images ...\n') ;
 
-valLabelsPath = fullfile('development_kit', 'data', 'val.txt');
+valLabelsPath = fullfile('..','development_kit', 'data', 'val.txt');
 validation = table2cell(readtable(valLabelsPath, 'Delimiter', ' ', ...
     'ReadVariableNames', false));
 ims = validation(:,1);
