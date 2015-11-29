@@ -53,12 +53,12 @@ for file = files'
     
     if run_on_val_set
         % Write the data to the text file
-        fprintf(fileID,formatSpec,strcat('val/', file.name), idx_sort(1), ...
-            idx_sort(2), idx_sort(3), idx_sort(4), idx_sort(5));
+        fprintf(fileID,formatSpec,strcat('val/', file.name), idx_sort(1)-1, ...
+            idx_sort(2)-1, idx_sort(3)-1, idx_sort(4)-1, idx_sort(5)-1);
     else
         % Write the data to the text file
-        fprintf(fileID,formatSpec,strcat('test/', file.name), idx_sort(1), ...
-            idx_sort(2), idx_sort(3), idx_sort(4), idx_sort(5));
+        fprintf(fileID,formatSpec,strcat('test/', file.name), idx_sort(1)-1, ...
+            idx_sort(2)-1, idx_sort(3)-1, idx_sort(4)-1, idx_sort(5)-1);
     end
 end
 
