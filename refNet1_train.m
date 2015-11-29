@@ -50,7 +50,7 @@ if exist(opts.imdbPath)
   imdb = load(opts.imdbPath) ;
 else
   % TODO this function
-  imdb = refNet1_imagenet_setup_data('dataDir', opts.dataDir, 'lite', opts.lite) ;
+  imdb = refNet1_setup_data('dataDir', opts.dataDir, 'lite', opts.lite) ;
   mkdir(opts.expDir) ;
   save(opts.imdbPath, '-struct', 'imdb') ;
 end
@@ -120,7 +120,7 @@ fn = @(imdb,batch) getBatchSimpleNN(imdb,batch,opts) ;
 function [im,labels] = getBatchSimpleNN(imdb, batch, opts)
 % -------------------------------------------------------------------------
 images = strcat([imdb.imageDir filesep], imdb.images.name(batch)) ;
-im = refNet1_get_batch_imagenet(images, opts, ...
+im = get_batch(images, opts, ...
                             'prefetch', nargout == 0) ;
 labels = imdb.images.label(batch) ;
 

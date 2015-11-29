@@ -1,22 +1,5 @@
-function imdb = refNet1_imagenet_setup_data(varargin)
-% CNN_IMAGENET_SETUP_DATA  Initialize ImageNet ILSVRC CLS-LOC challenge data
-%
-%    Jake's version
-%
-%    In order to use the ILSVRC data with these scripts, please
-%    unpack it as follows. Create a root folder <DATA>, by default
-%
-%    data/imagenet12
-%
-%    (note that this can be a simlink). Use the 'dataDir' option to
-%    specify a different path.
-%
-%    Within this folder, create the following hierarchy:
-%
-%    <DATA>/images/train/ : content of ILSVRC2012_img_train.tar
-%    <DATA>/images/val/ : content of ILSVRC2012_img_val.tar
-%    <DATA>/images/test/ : content of ILSVRC2012_img_test.tar
-%    <DATA>/ILSVRC2012_devkit : content of ILSVRC2012_devkit.tar
+function imdb = refNet1_setup_data(varargin)
+%    Need to have repo/data/images/{train,val,test}
 %
 %    In order to speedup training and testing, it may be a good idea
 %    to preprocess the images to have a fixed size (e.g. 256 pixels
@@ -63,7 +46,6 @@ imdb.classes.name = cats' ;
 imdb.classes.description = descrs' ;
 % This is the top-level directory of image data 
 imdb.imageDir = fullfile(opts.dataDir, 'images') ;
-% getAllFiles(opts.dataDir);
 
 % -------------------------------------------------------------------------
 %                                                           Training images
