@@ -7,7 +7,7 @@ opts.initBias = 0.1 ;
 opts.weightDecay = 1 ;
 opts.weightInitMethod = 'gaussian' ;
 opts.model = 'refNet1' ;
-opts.batchNormalization = true ;
+opts.batchNormalization = false ;
 opts = vl_argparse(opts, varargin) ;
 
 % Define layers
@@ -28,16 +28,7 @@ net.layers{end+1} = struct('type', 'softmaxloss', 'name', 'loss') ;
 
 net.normalization.border = 128 - net.normalization.imageSize(1:2) ;
 net.normalization.interpolation = 'bicubic' ;
-
-imageStatsPath = fullfile(opts.expDir, 'imageStats.mat') ;
-if exist(imageStatsPath)
-  load(imageStatsPath, 'averageImage', 'rgbMean', 'rgbCovariance') ;
-else
-  [averageImage, rgbMean, rgbCovariance] = getImageStats(imdb, bopts) ;
-  save(imageStatsPath, 'averageImage', 'rgbMean', 'rgbCovariance') ;
-end
-
-net.normalization.averageImage = averageImage ;
+net.normalization.averageImage = [] ;
 net.normalization.keepAspect = true ;
  
 
