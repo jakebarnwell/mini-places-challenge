@@ -116,7 +116,7 @@ end
 % --------------------------------------------------------------------
 function net = alexnet(net, opts)
 % --------------------------------------------------------------------
-
+fprintf('init with alexnet')
 net.layers = {} ;
 
 net = add_block(net, opts, '1', 11, 11, 3, 96, 4, 0) ;
@@ -279,7 +279,7 @@ if opts.batchNormalization, net.layers(end) = [] ; end
 % --------------------------------------------------------------------
 function net = vgg_vd(net, opts)
 % --------------------------------------------------------------------
-
+fprintf('vgg_vd init net')
 net.layers = {} ;
 net = add_block(net, opts, '1_1', 3, 3, 3, 64, 1, 1) ;
 net = add_block(net, opts, '1_2', 3, 3, 64, 64, 1, 1) ;
