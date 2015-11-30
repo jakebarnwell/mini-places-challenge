@@ -26,8 +26,7 @@ else
     % Run for all images in the test set
     files = dir('data/images/test/*.jpg');
     fileID = fopen('test_results.txt','w');
-    
-    fileID = fopen('test_results.txt','w');
+
     formatSpec = '%s %d %d %d %d %d\n';
     disp('RUNNING ON TEST SET');
 end
@@ -38,7 +37,9 @@ net.layers{1,end}.name = 'prob';
 
 for file = files'
     % load and preprocess an image
-    im = imread(fullfile('data/images/val/', file.name)) ;
+    filename = fullfile('data/images/val/', file.name);
+    fprintf('Processing: %s\n', filename)
+    im = imread(filename) ;
     im_resize = imresize(im, net.normalization.imageSize(1:2)) ;
     im_ = single(im_resize) ;
     for i=1:3

@@ -1,4 +1,4 @@
-function alexnet1_train(varargin)
+function alexnet2_train(varargin)
 
 addpath(fullfile('..','matconvnet','examples'));
 addpath(fullfile('..','matconvnet','matlab'));
@@ -8,7 +8,7 @@ run(fullfile(fileparts(mfilename('fullpath')), ...
 	     '..','matconvnet', 'matlab', 'vl_setupnn.m')) ;
 
 %% Change this stuff in these 2 lines:
-NETNAME = 'alexnet1'
+NETNAME = 'alexnet2'
 opts.modelType = 'alexnet' ;
 
 opts.dataDir = fullfile('..','data') ;
