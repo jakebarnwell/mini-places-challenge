@@ -38,7 +38,12 @@ net.layers{1,end}.name = 'prob';
 
 for file = files'
     % load and preprocess an image
-    im = imread(fullfile('data/images/val/', file.name)) ;
+    if run_on_val_set
+        im = imread(fullfile('data/images/val/', file.name)) ;
+    else
+        im = imread(fullfile('data/images/test/', file.name)) ;
+    end
+    
     im_resize = imresize(im, net.normalization.imageSize(1:2)) ;
     im_ = single(im_resize) ;
     for i=1:3
