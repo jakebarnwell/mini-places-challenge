@@ -9,8 +9,8 @@ opts.transformation = 'none' ;
 opts.averageImage = [] ;
 opts.rgbVariance = zeros(0,3,'single') ;
 opts.interpolation = 'bilinear' ;
-opts.numThreads = 1 ;
-opts.prefetch = false ;
+opts.numThreads = 32 ;
+opts.prefetch = true ;
 opts = vl_argparse(opts, varargin);
 
 % fetch is true if images is a list of filenames (instead of
