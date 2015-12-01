@@ -1,10 +1,10 @@
-function imo = get_batch_aug(images, varargin)
+function imo = get_batch_aug8(images, varargin)
 % CNN_IMAGENET_GET_BATCH  Load, preprocess, and pack images for CNN evaluation
 
 opts.imageSize = [126, 126] ; % was 227, 227
 opts.border = [29, 29] ;
 opts.keepAspect = true ;
-opts.numAugments = 4 ;
+opts.numAugments = 8 ;
 opts.transformation = 'none' ;
 opts.averageImage = [] ;
 opts.rgbVariance = zeros(0,3,'single') ;

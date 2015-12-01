@@ -1,4 +1,4 @@
-function refaug2_train(varargin)
+function refaug8_train(varargin)
 % REFNET1_TRAIN_IMAGENET  Copies the style of cnn_imagenet
 %   This tries to train the miniplaces competition net
 
@@ -19,7 +19,7 @@ opts.weightInitMethod = 'gaussian' ;
 
 sfx = opts.modelType ;
 if opts.batchNormalization, sfx = [sfx '-bnorm'] ; end
-opts.expDir = fullfile(opts.dataDir, 'refnetaug2', ...
+opts.expDir = fullfile(opts.dataDir, 'refnetaug8', ...
     sprintf('refnet-%s-%s', sfx, opts.networkType)) ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
@@ -104,9 +104,9 @@ fn = @(imdb,batch) getBatchSimpleNN(imdb,batch,opts) ;
 function [im,labels] = getBatchSimpleNN(imdb, batch, opts)
 % -------------------------------------------------------------------------
 images = strcat([imdb.imageDir filesep], imdb.images.name(batch)) ;
-im = get_batch_aug2(images, opts, ...
+im = get_batch_aug8(images, opts, ...
                             'prefetch', nargout == 0) ;
-labels = kron(imdb.images.label(batch), ones(1, 2));
+labels = kron(imdb.images.label(batch), ones(1, 8));
 
 % -------------------------------------------------------------------------
 function [averageImage, rgbMean, rgbCovariance] = getImageStats(imdb, opts)
