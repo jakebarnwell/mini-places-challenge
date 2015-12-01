@@ -2,4 +2,4 @@
 data.tar.gz
 matconvnet/
 *.*~
-nets/alexnet
+nets/alexnet1/net-epoch-20.mat
