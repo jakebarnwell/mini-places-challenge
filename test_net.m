@@ -8,11 +8,11 @@ run(fullfile(fileparts(mfilename('fullpath')), ...
 load('categoryIDX.mat');
 
 % Trained CNN - CHANGE THIS TO EVALUATE DIFFERENT NEURAL NETS
-path_model = 'nets/refnet/net-epoch-60.mat';
+path_model = 'nets/alexnet/net-epoch-20.mat';
 load([path_model]) ;
 
 % WHETHER RUNNING ON VAL OR TEST SET, CHANGE THIS TO CHANGE WHAT RUNNING ON
-run_on_val_set = false;
+run_on_val_set = true;
 
 if run_on_val_set
     % Run for all images in the valid set
