@@ -4,7 +4,7 @@ function imo = get_batch_aug(images, varargin)
 opts.imageSize = [126, 126] ; % was 227, 227
 opts.border = [29, 29] ;
 opts.keepAspect = true ;
-opts.numAugments = 2 ;
+opts.numAugments = 4 ;
 opts.transformation = 'none' ;
 opts.averageImage = [] ;
 opts.rgbVariance = zeros(0,3,'single') ;
@@ -126,4 +126,5 @@ for i=1:numel(images)
     end
     si = si + 1 ;
   end
+  
 end

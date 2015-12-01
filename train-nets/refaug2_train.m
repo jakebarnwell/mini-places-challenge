@@ -29,7 +29,7 @@ opts.imdbPath = fullfile(opts.expDir, 'imdb.mat');
 opts.train.batchSize = 256 ;
 opts.train.numSubBatches = 2 ;
 opts.train.continue = true ;
-opts.train.gpus = [1,2,3,4] ;
+opts.train.gpus = [1, 2, 3, 4] ;
 opts.train.prefetch = true ;
 opts.train.sync = false ;
 opts.train.cudnn = true ;
@@ -106,7 +106,7 @@ function [im,labels] = getBatchSimpleNN(imdb, batch, opts)
 images = strcat([imdb.imageDir filesep], imdb.images.name(batch)) ;
 im = get_batch_aug(images, opts, ...
                             'prefetch', nargout == 0) ;
-labels = repmat(imdb.images.label(batch), 1, 2);
+labels = kron(imdb.images.label(batch), ones(1, 4));
 
 % -------------------------------------------------------------------------
 function [averageImage, rgbMean, rgbCovariance] = getImageStats(imdb, opts)
