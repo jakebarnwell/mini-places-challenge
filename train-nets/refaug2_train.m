@@ -1,4 +1,4 @@
-function refNet1_train(varargin)
+function refaug2_train(varargin)
 % REFNET1_TRAIN_IMAGENET  Copies the style of cnn_imagenet
 %   This tries to train the miniplaces competition net
 
@@ -27,7 +27,7 @@ opts.numFetchThreads = 12 ;
 opts.lite = false ;
 opts.imdbPath = fullfile(opts.expDir, 'imdb.mat');
 opts.train.batchSize = 256 ;
-opts.train.numSubBatches = 1 ;
+opts.train.numSubBatches = 2 ;
 opts.train.continue = true ;
 opts.train.gpus = [1, 2, 3, 4] ;
 opts.train.prefetch = true ;
