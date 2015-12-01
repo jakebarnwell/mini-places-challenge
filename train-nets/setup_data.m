@@ -1,4 +1,4 @@
-function imdb = refNet1_setup_data(varargin)
+function imdb = setup_data(varargin)
 %    Need to have repo/data/images/{train,val,test}
 %     and repo/data/objects/...
 %
