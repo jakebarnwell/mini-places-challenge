@@ -1,4 +1,6 @@
-function alexnet2_train(varargin)
+function refNet1_train(varargin)
+% REFNET1_TRAIN_IMAGENET  Copies the style of cnn_imagenet
+%   This tries to train the miniplaces competition net
 
 addpath(fullfile('..','matconvnet','examples'));
 addpath(fullfile('..','matconvnet','matlab'));
@@ -7,11 +9,9 @@ addpath(fullfile('..'));
 run(fullfile(fileparts(mfilename('fullpath')), ...
 	     '..','matconvnet', 'matlab', 'vl_setupnn.m')) ;
 
-%% Change this stuff in these 2 lines:
-NETNAME = 'alexnet2'
-opts.modelType = 'alexnet' ;
-
+% Contains our images/objects etc
 opts.dataDir = fullfile('..','data') ;
+opts.modelType = 'refNet1' ;
 opts.networkType = 'simplenn' ;
 opts.batchNormalization = true ;
 opts.weightInitMethod = 'gaussian' ;
@@ -19,8 +19,8 @@ opts.weightInitMethod = 'gaussian' ;
 
 sfx = opts.modelType ;
 if opts.batchNormalization, sfx = [sfx '-bnorm'] ; end
-opts.expDir = fullfile(opts.dataDir, NETNAME, ...
-		sprintf('%s-%s-%s', NETNAME, sfx, opts.networkType)) ;
+opts.expDir = fullfile(opts.dataDir, 'refnetaug2', ...
+    sprintf('refnet-%s-%s', sfx, opts.networkType)) ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
 opts.numFetchThreads = 12 ;
@@ -51,7 +51,7 @@ opts = vl_argparse(opts, varargin) ;
 if exist(opts.imdbPath)
   imdb = load(opts.imdbPath) ;
 else
-  imdb = refNet1_setup_data('dataDir', opts.dataDir, 'lite', opts.lite) ;
+  imdb = setup_data('dataDir', opts.dataDir, 'lite', opts.lite) ;
   mkdir(opts.expDir) ;
   save(opts.imdbPath, '-struct', 'imdb') ;
 end
@@ -103,7 +103,7 @@ fn = @(imdb,batch) getBatchSimpleNN(imdb,batch,opts) ;
 function [im,labels] = getBatchSimpleNN(imdb, batch, opts)
 % -------------------------------------------------------------------------
 images = strcat([imdb.imageDir filesep], imdb.images.name(batch)) ;
-im = get_batch(images, opts, ...
+im = get_batch_aug(images, opts, ...
                             'prefetch', nargout == 0) ;
 labels = imdb.images.label(batch) ;
 
