@@ -5,7 +5,7 @@ opts.imageSize = [126, 126] ; % was 227, 227
 opts.border = [29, 29] ;
 opts.keepAspect = true ;
 opts.numAugments = 2 ;
-opts.transformation = 'f5' ;
+opts.transformation = 'none' ;
 opts.averageImage = [] ;
 opts.rgbVariance = zeros(0,3,'single') ;
 opts.interpolation = 'bilinear' ;
@@ -126,6 +126,4 @@ for i=1:numel(images)
     end
     si = si + 1 ;
   end
-numel(images)
-size(imo, 4)
 end

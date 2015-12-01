@@ -51,7 +51,7 @@ opts = vl_argparse(opts, varargin) ;
 if exist(opts.imdbPath)
   imdb = load(opts.imdbPath) ;
 else
-  imdb = refNet1_setup_data('dataDir', opts.dataDir, 'lite', opts.lite) ;
+  imdb = setup_data('dataDir', opts.dataDir, 'lite', opts.lite) ;
   mkdir(opts.expDir) ;
   save(opts.imdbPath, '-struct', 'imdb') ;
 end
