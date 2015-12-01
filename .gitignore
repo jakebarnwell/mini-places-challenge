@@ -2,3 +2,4 @@
 data.tar.gz
 matconvnet/
 *.*~
+nets/alexnet
