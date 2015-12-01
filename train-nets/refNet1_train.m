@@ -11,7 +11,7 @@ run(fullfile(fileparts(mfilename('fullpath')), ...
 
 % Contains our images/objects etc
 opts.dataDir = fullfile('..','data') ;
-opts.modelType = 'refNet1' ;
+opts.modelType = 'alexnet' ;
 opts.networkType = 'simplenn' ;
 opts.batchNormalization = false ;
 opts.weightInitMethod = 'gaussian' ;
@@ -24,6 +24,7 @@ opts.expDir = fullfile(opts.dataDir, 'refnet', ...
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
 opts.numFetchThreads = 12 ;
+
 opts.lite = false ;
 opts.imdbPath = fullfile(opts.expDir, 'imdb.mat');
 opts.train.batchSize = 256 ;
