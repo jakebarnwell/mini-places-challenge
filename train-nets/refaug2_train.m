@@ -13,7 +13,7 @@ run(fullfile(fileparts(mfilename('fullpath')), ...
 opts.dataDir = fullfile('..','data') ;
 opts.modelType = 'refNet1' ;
 opts.networkType = 'simplenn' ;
-opts.batchNormalization = true ;
+opts.batchNormalization = false ;
 opts.weightInitMethod = 'gaussian' ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
