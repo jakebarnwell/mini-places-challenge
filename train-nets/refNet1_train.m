@@ -13,13 +13,13 @@ run(fullfile(fileparts(mfilename('fullpath')), ...
 opts.dataDir = fullfile('..','data') ;
 opts.modelType = 'refNet1' ;
 opts.networkType = 'simplenn' ;
-opts.batchNormalization = false ;
+opts.batchNormalization = true ;
 opts.weightInitMethod = 'gaussian' ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
 sfx = opts.modelType ;
 if opts.batchNormalization, sfx = [sfx '-bnorm'] ; end
-opts.expDir = fullfile(opts.dataDir, 'refnet', ...
+opts.expDir = fullfile(opts.dataDir, 'refnet1-normalization', ...
     sprintf('refnet-%s-%s', sfx, opts.networkType)) ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
@@ -52,7 +52,7 @@ opts = vl_argparse(opts, varargin) ;
 if exist(opts.imdbPath)
   imdb = load(opts.imdbPath) ;
 else
-  imdb = refNet1_setup_data('dataDir', opts.dataDir, 'lite', opts.lite) ;
+  imdb = setup_data('dataDir', opts.dataDir, 'lite', opts.lite) ;
   mkdir(opts.expDir) ;
   save(opts.imdbPath, '-struct', 'imdb') ;
 end
