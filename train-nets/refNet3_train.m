@@ -11,7 +11,7 @@ run(fullfile(fileparts(mfilename('fullpath')), ...
 
 % Contains our images/objects etc
 opts.dataDir = fullfile('..','data') ;
-opts.modelType = 'refNet1' ;
+opts.modelType = 'refNet2' ;
 opts.networkType = 'simplenn' ;
 opts.batchNormalization = true ;
 opts.weightInitMethod = 'gaussian' ;
@@ -30,7 +30,7 @@ opts.imdbPath = fullfile(opts.expDir, 'imdb.mat');
 opts.train.batchSize = 256 ;
 opts.train.numSubBatches = 1 ;
 opts.train.continue = true ;
-opts.train.gpus = [1, 2, 3, 4] ;
+opts.train.gpus = [] ;
 opts.train.prefetch = true ;
 opts.train.sync = false ;
 opts.train.cudnn = true ;
