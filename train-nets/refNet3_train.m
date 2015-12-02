@@ -13,7 +13,7 @@ run(fullfile(fileparts(mfilename('fullpath')), ...
 opts.dataDir = fullfile('..','data') ;
 opts.modelType = 'refNet2' ;
 opts.networkType = 'simplenn' ;
-opts.batchNormalization = true ;
+opts.batchNormalization = false ;
 opts.weightInitMethod = 'gaussian' ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
@@ -30,7 +30,7 @@ opts.imdbPath = fullfile(opts.expDir, 'imdb.mat');
 opts.train.batchSize = 256 ;
 opts.train.numSubBatches = 1 ;
 opts.train.continue = true ;
-opts.train.gpus = [] ;
+opts.train.gpus = [1,2,3,4] ;
 opts.train.prefetch = true ;
 opts.train.sync = false ;
 opts.train.cudnn = true ;
