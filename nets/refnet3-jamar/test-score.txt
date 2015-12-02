@@ -1,0 +1,1 @@
+Your top-5 error is 0.414 and top-1 error is 0.706.
