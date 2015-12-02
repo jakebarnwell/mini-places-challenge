@@ -17,7 +17,7 @@ switch opts.model
     net = refNet1(net, opts)
   case 'refNet2'
     net.normalization.imageSize = [126, 126, 3] ;
-    net = refNet1(net, opts)
+    net = refNet2(net, opts)
   case 'alexnet'
     net.normalization.imageSize = [227, 227, 3] ;
     net = alexnet(net, opts) ;
@@ -395,16 +395,6 @@ function net = refNet2(net, opts)
 fprintf('Initializing net refNet1')
 net.layers = {} ;
 
-% Extra layer
-% function net = add_block(net, opts, id, h, w, in, out, stride, pad, init_bias)
-% No idea....
-net = add_block(net, opts, '6', 3, 3, 128, 128, 1, 0);
-net.layers{end+1} = struct('type', 'pool', 'name', 'pool6', ...
-                           'method', 'max', ...
-                           'pool', [2 2], ...
-                           'stride', 2, ...
-                           'pad', 0) ;
-
 net = add_block(net, opts, '1', 8, 8, 3, 64, 2, 0) ;
 net = add_norm(net, opts, '1') ;
 net.layers{end+1} = struct('type', 'pool', 'name', 'pool1', ...
@@ -428,11 +418,21 @@ net.layers{end+1} = struct('type', 'pool', 'name', 'pool5', ...
                            'pool', [3 3], ...
                            'stride', 2, ...
                            'pad', 0) ;
+
+% Extra layer
+% function net = add_block(net, opts, id, h, w, in, out, stride, pad, init_bias)
+% No idea....
+net = add_block(net, opts, '4', 3, 3, 128, 128, 1, 1);
+%net.layers{end+1} = struct('type', 'pool', 'name', 'pool6', ...
+%                           'method', 'max', ...
+%                           'pool', [2 2], ...
+%                           'stride', 2, ...
+%                           'pad', 0) ;
                        
-net = add_block(net, opts, '4', 6, 6, 128, 512, 1, 0) ;
+net = add_block(net, opts, '5', 6, 6, 128, 512, 1, 0) ;
 net = add_dropout(net, opts, '4') ;
 
-net = add_block(net, opts, '5', 1, 1, 512, 100, 1, 0) ;
+net = add_block(net, opts, '6', 1, 1, 512, 100, 1, 0) ;
 
 net.layers(end) = [] ;
 if opts.batchNormalization, net.layers(end) = [] ; end
