@@ -10,7 +10,7 @@ load('categoryIDX.mat');
 num_models = 1;
 
 % Trained CNN #1
-path_model = 'nets/refnet3/net-epoch-60.mat';
+path_model = 'nets/refaug2-noBN/net-epoch-60.mat';
 load([path_model]) ;
 disp(strcat('Loaded Model ', path_model));
 
@@ -34,7 +34,7 @@ net_struct(1) = net;
 % % info_struct(2) = info;
 
 % WHETHER RUNNING ON VAL OR TEST SET, CHANGE THIS TO CHANGE WHAT RUNNING ON
-run_on_val_set = false;
+run_on_val_set = true;
 
 if run_on_val_set
     % Run for all images in the valid set
