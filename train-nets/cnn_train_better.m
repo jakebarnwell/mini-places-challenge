@@ -375,13 +375,7 @@ end
 
 % Write test/val results to file
 if learningRate <= 0
-    size(all_results)
-    all_results(1:5,:)
     pred = all_results;
-
-%    all_results_table = cell2table(all_results);
-%    f = fullfile(opts.expDir, sprintf('%s-predictions-%d', mode, epoch));
-%    write(all_results_table, f, 'WriteVariableNames', 0, 'Delimiter', ' ');
 end
 
 if nargout > 3
