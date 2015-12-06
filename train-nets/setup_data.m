@@ -80,7 +80,8 @@ function lab = getLabel(imagePathStripped)
     [~, lab] = ismember(category, descrs);
 end
 
-if numel(names) ~= NUM_TRAINING_IMAGES;
+if 0
+% if numel(names) ~= NUM_TRAINING_IMAGES;
   warning('Found %d instead of %d training images. Dropping training set.', numel(names), NUM_TRAINING_IMAGES)
   names = {} ;
   labels = [] ;
@@ -100,14 +101,15 @@ imdb.images.label = labels' ;
 
 fprintf('Searching validation images ...\n') ;
 
-valLabelsPath = fullfile('..','development_kit', 'data', 'val.txt');
+valLabelsPath = fullfile('..','development_kit', 'data', 'val_fake.txt');
 validation = table2cell(readtable(valLabelsPath, 'Delimiter', ' ', ...
     'ReadVariableNames', false));
 ims = validation(:,1);
 names = sort(ims);
 labels = cellfun(@(x) x+1, validation(:,2));
 
-if numel(ims) ~= NUM_VAL_IMAGES
+if 0
+% if numel(ims) ~= NUM_VAL_IMAGES
   warning('Found %d instead of %d validation images. Dropping validation set.', numel(ims), NUM_VAL_IMAGES)
   names = {} ;
   labels = [] ;
@@ -128,7 +130,8 @@ ims = dir(fullfile(opts.dataDir, 'images', 'test', '*.jpg')) ;
 names = sort({ims.name}) ;
 labels = zeros(1, numel(names)) ;
 
-if numel(labels) ~= NUM_TEST_IMAGES
+if 0
+% if numel(labels) ~= NUM_TEST_IMAGES
   warning('Found %d instead of %d test images', numel(labels), NUM_TEST_IMAGES)
 end
 

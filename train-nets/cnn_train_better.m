@@ -325,6 +325,7 @@ for t=1:opts.batchSize:numel(subset)
         [~,predictions] = sort(predictions, 3, 'descend') ;
         psize = size(predictions);
         predictions = reshape(predictions, [psize(3), psize(4)]);
+        predictions = cellfun(@(x) x-1, predictions); % subtracts 1
         top_predictions = reshape(predictions(1:5,:)', [5*psize(4), 1]);
         top_predictions_cell = num2cell(top_predictions);
         % batch stores indices of images from imdb.images ordering
