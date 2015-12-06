@@ -23,7 +23,7 @@ opts.expDir = fullfile(opts.dataDir, NETNAME, ...
 		sprintf('%s-%s-%s', NETNAME, sfx, opts.networkType)) ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
-opts.numFetchThreads = 12 ;
+opts.numFetchThreads = 32 ;
 opts.lite = false ;
 opts.imdbPath = fullfile(opts.expDir, 'imdb.mat');
 opts.train.batchSize = 256 ;
@@ -37,7 +37,7 @@ opts.train.expDir = opts.expDir ;
 if ~opts.batchNormalization
   opts.train.learningRate = logspace(-2, -4, 60) ;
 else
-  opts.train.learningRate = logspace(-1, -4, 20) ;
+  opts.train.learningRate = logspace(-1, -4, 21) ;
 end
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
@@ -92,7 +92,7 @@ useGpu = numel(opts.train.gpus) > 0 ;
 
 %  getBatchSimpleNNWrapper, cnn_train stuff
 fn = getBatchSimpleNNWrapper(bopts) ;
-[net,info] = cnn_train(net, imdb, fn, opts.train, 'conserveMemory', false) ;
+[net,info] = cnn_train_better(net, imdb, fn, opts.train, 'conserveMemory', false) ;
 
 % -------------------------------------------------------------------------
 function fn = getBatchSimpleNNWrapper(opts)
