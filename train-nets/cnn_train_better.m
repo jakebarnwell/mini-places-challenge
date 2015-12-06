@@ -132,20 +132,38 @@ for epoch=start+1:opts.numEpochs
   test = opts.test ;
   if numGpus <= 1
     [net,stats.train] = process_epoch(opts, getBatch, epoch, train, learningRate, imdb, net) ;
-    [~,stats.val] = process_epoch(opts, getBatch, epoch, val, 0, imdb, net) ;
-    [~,stats.test] = process_epoch(opts, getBatch, epoch, test, -1, imdb, net) ;
+    [~,stats.val,pred_val] = process_epoch(opts, getBatch, epoch, val, 0, imdb, net) ;
+    [~,stats.test,pred_test] = process_epoch(opts, getBatch, epoch, test, -1, imdb, net) ;
   else
     spmd(numGpus)
       [net_, stats_train_] = process_epoch(opts, getBatch, epoch, train, learningRate, imdb, net) ;
-      [~, stats_val_] = process_epoch(opts, getBatch, epoch, val, 0, imdb, net_) ;
-      [~, stats_test_] = process_epoch(opts, getBatch, epoch, test, -1, imdb, net_) ;
+      [~, stats_val_,pred_val_] = process_epoch(opts, getBatch, epoch, val, 0, imdb, net_) ;
+      [~, stats_test_,pred_test_] = process_epoch(opts, getBatch, epoch, test, -1, imdb, net_) ;
     end
     net = net_{1} ;
     stats.train = sum([stats_train_{:}],2) ;
     stats.val = sum([stats_val_{:}],2) ;
     stats.test = sum([stats_test_{:}],2) ;
+    
+    pred_val = cell(0, 6);
+    pred_test = cell(0, 6);
+    for g = 1:numGpus
+        numRows = size(pred_val_{g});
+        numRows = numRows(1);
+        pred_val(end+1:end+1+numRows-1,:) = pred_val_{g};
+        numRows = size(pred_test_{g});
+        numRows = numRows(1);
+        pred_test(end+1:end+1+numRows-1,:) = pred_test_{g};
+    end
+    
   end
-
+   pred_val_table = sortrows(cell2table(pred_val));
+   pred_test_table = sortrows(cell2table(pred_test));
+   fval = fullfile(opts.expDir, sprintf('val-predictions-%d', epoch));
+   ftest = fullfile(opts.expDir, sprintf('test-predictions-%d', epoch));
+   write(pred_val_table, fval, 'WriteVariableNames', 0, 'Delimiter', ' ');
+   write(pred_test_table, ftest, 'WriteVariableNames', 0, 'Delimiter', ' ');
+   
   % save
   if evaluateMode, sets = {'val'} ; else sets = {'train', 'val', 'test'} ; end
   for f = sets
@@ -224,7 +242,7 @@ function err = error_none(opts, labels, res)
 err = zeros(0,1) ;
 
 % -------------------------------------------------------------------------
-function  [net_cpu,stats,prof] = process_epoch(opts, getBatch, epoch, subset, learningRate, imdb, net_cpu)
+function  [net_cpu,stats,pred,prof] = process_epoch(opts, getBatch, epoch, subset, learningRate, imdb, net_cpu)
 % -------------------------------------------------------------------------
 
 % move CNN to GPU as needed
@@ -242,7 +260,7 @@ if training, mode = 'training' ; end
 if learningRate == 0, mode = 'validation' ; end
 if learningRate == -1, mode = 'testing' ; end
 
-if nargout > 2, mpiprofile on ; end
+if nargout > 3, mpiprofile on ; end
 
 numGpus = numel(opts.gpus) ;
 if numGpus >= 1
@@ -359,17 +377,14 @@ end
 if learningRate <= 0
     size(all_results)
     all_results(1:5,:)
-    if learningRate == -1
-      stats.predict.test = all_results
-    else
-      stats.predict.val = all_results
-    end
+    pred = all_results;
+
 %    all_results_table = cell2table(all_results);
 %    f = fullfile(opts.expDir, sprintf('%s-predictions-%d', mode, epoch));
 %    write(all_results_table, f, 'WriteVariableNames', 0, 'Delimiter', ' ');
 end
 
-if nargout > 2
+if nargout > 3
   prof = mpiprofile('info');
   mpiprofile off ;
 end
