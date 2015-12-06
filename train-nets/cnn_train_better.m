@@ -255,6 +255,9 @@ mmap = [] ;
 stats = [] ;
 start = tic ;
 
+all_results = cell(numel(subset), 6);
+ind_current = 1;
+
 for t=1:opts.batchSize:numel(subset)
   fprintf('%s: epoch %02d: batch %3d/%3d: ', mode, epoch, ...
           fix(t/opts.batchSize)+1, ceil(numel(subset)/opts.batchSize)) ;
@@ -307,17 +310,11 @@ for t=1:opts.batchSize:numel(subset)
         predictions = reshape(predictions, [psize(3), psize(4)]);
         top_predictions = reshape(predictions(1:5,:)', [5*psize(4), 1]);
         top_predictions_cell = num2cell(top_predictions);
-        % subset stores indices of images from imdb.images ordering
+        % batch stores indices of images from imdb.images ordering
         imdb_names = imdb.images.name(batch)';
-	size(predictions)
-	size(imdb_names)
-	size(top_predictions)
-	size(top_predictions_cell)
-				  
-        results = reshape([imdb_names ; top_predictions_cell], [psize(4), 6]) ;
-        results_table = cell2table(results);
-        f = fullfile(opts.expDir, sprintf('%s-predictions-%d', mode, epoch));
-        write(results_table, f, 'WriteVariableNames', 0, 'Delimiter', ' ');
+	    results = reshape([imdb_names ; top_predictions_cell], [psize(4), 6]) ;
+        all_results(ind_current:ind_current+numel(batch)-1,:) = results;
+        ind_current = ind_current + numel(batch);
     end
     
     numDone = numDone + numel(batch) ;
@@ -357,9 +354,14 @@ for t=1:opts.batchSize:numel(subset)
   % debug info
   if opts.plotDiagnostics && numGpus <= 1
     figure(2) ; vl_simplenn_diagnose(net,res) ; drawnow ;
-  end
+  end  
+end
 
-  
+% Write test/val results to file
+if learningRate <= 0
+    all_results_table = sortrows(cell2table(all_results));
+    f = fullfile(opts.expDir, sprintf('%s-predictions-%d', mode, epoch));
+    write(all_results_table, f, 'WriteVariableNames', 0, 'Delimiter', ' ');
 end
 
 if nargout > 2
