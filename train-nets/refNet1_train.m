@@ -19,15 +19,15 @@ opts.weightInitMethod = 'gaussian' ;
 
 sfx = opts.modelType ;
 if opts.batchNormalization, sfx = [sfx '-bnorm'] ; end
-opts.expDir = fullfile(opts.dataDir, 'refnet1-normalization2', ...
+opts.expDir = fullfile(opts.dataDir, 'refnet1-testbatches', ...
     sprintf('refnet-%s-%s', sfx, opts.networkType)) ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
-opts.numFetchThreads = 12 ;
+opts.numFetchThreads = 32 ;
 
 opts.lite = false ;
 opts.imdbPath = fullfile(opts.expDir, 'imdb.mat');
-opts.train.batchSize = 256 ;
+opts.train.batchSize = 1000 ;
 opts.train.numSubBatches = 1 ;
 opts.train.continue = true ;
 opts.train.gpus = [1, 2, 3, 4] ;
