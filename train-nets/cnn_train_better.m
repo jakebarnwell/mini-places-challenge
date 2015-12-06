@@ -308,7 +308,12 @@ for t=1:opts.batchSize:numel(subset)
         top_predictions = reshape(predictions(1:5,:)', [5*psize(4), 1]);
         top_predictions_cell = num2cell(top_predictions);
         % subset stores indices of images from imdb.images ordering
-        imdb_names = imdb.images.name(subset)';
+        imdb_names = imdb.images.name(batch)';
+	size(predictions)
+	size(imdb_names)
+	size(top_predictions)
+	size(top_predictions_cell)
+				  
         results = reshape([imdb_names ; top_predictions_cell], [psize(4), 6]) ;
         results_table = cell2table(results);
         f = fullfile(opts.expDir, sprintf('%s-predictions-%d', mode, epoch));

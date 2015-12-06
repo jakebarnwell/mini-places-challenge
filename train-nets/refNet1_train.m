@@ -19,7 +19,7 @@ opts.weightInitMethod = 'gaussian' ;
 
 sfx = opts.modelType ;
 if opts.batchNormalization, sfx = [sfx '-bnorm'] ; end
-opts.expDir = fullfile(opts.dataDir, 'refnet1-normalization', ...
+opts.expDir = fullfile(opts.dataDir, 'refnet1-normalization2', ...
     sprintf('refnet-%s-%s', sfx, opts.networkType)) ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
@@ -93,7 +93,7 @@ useGpu = numel(opts.train.gpus) > 0 ;
 
 %  getBatchSimpleNNWrapper, cnn_train stuff
 fn = getBatchSimpleNNWrapper(bopts) ;
-[net,info] = cnn_train(net, imdb, fn, opts.train, 'conserveMemory', true) ;
+[net,info] = cnn_train_better(net, imdb, fn, opts.train, 'conserveMemory', true) ;
 
 % -------------------------------------------------------------------------
 function fn = getBatchSimpleNNWrapper(opts)
