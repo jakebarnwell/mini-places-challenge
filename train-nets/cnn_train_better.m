@@ -255,8 +255,7 @@ mmap = [] ;
 stats = [] ;
 start = tic ;
 
-all_results = cell(numel(subset), 6);
-ind_current = 1;
+all_results = cell(0, 6);
 
 for t=1:opts.batchSize:numel(subset)
   fprintf('%s: epoch %02d: batch %3d/%3d: ', mode, epoch, ...
@@ -312,9 +311,8 @@ for t=1:opts.batchSize:numel(subset)
         top_predictions_cell = num2cell(top_predictions);
         % batch stores indices of images from imdb.images ordering
         imdb_names = imdb.images.name(batch)';
-	    results = reshape([imdb_names ; top_predictions_cell], [psize(4), 6]) ;
-        all_results(ind_current:ind_current+numel(batch)-1,:) = results;
-        ind_current = ind_current + numel(batch);
+	results = reshape([imdb_names ; top_predictions_cell], [psize(4), 6]) ;
+        all_results(end+1:end+1+numel(batch)-1,:) = results;
     end
     
     numDone = numDone + numel(batch) ;
@@ -359,9 +357,16 @@ end
 
 % Write test/val results to file
 if learningRate <= 0
-    all_results_table = sortrows(cell2table(all_results));
-    f = fullfile(opts.expDir, sprintf('%s-predictions-%d', mode, epoch));
-    write(all_results_table, f, 'WriteVariableNames', 0, 'Delimiter', ' ');
+    size(all_results)
+    all_results(1:5,:)
+    if learningRate == -1
+      stats.predict.test = all_results
+    else
+      stats.predict.val = all_results
+    end
+%    all_results_table = cell2table(all_results);
+%    f = fullfile(opts.expDir, sprintf('%s-predictions-%d', mode, epoch));
+%    write(all_results_table, f, 'WriteVariableNames', 0, 'Delimiter', ' ');
 end
 
 if nargout > 2
