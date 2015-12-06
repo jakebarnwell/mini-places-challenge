@@ -1,4 +1,4 @@
-function refaug4_train(varargin)
+function jamaraug4_train(varargin)
 % REFNET1_TRAIN_IMAGENET  Copies the style of cnn_imagenet
 %   This tries to train the miniplaces competition net
 
@@ -23,7 +23,7 @@ opts.expDir = fullfile(opts.dataDir, 'jamaraug4-bn', ...
     sprintf('refnet-%s-%s', sfx, opts.networkType)) ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
-opts.numFetchThreads = 132 ;
+opts.numFetchThreads = 32 ;
 opts.lite = false ;
 opts.imdbPath = fullfile(opts.expDir, 'imdb.mat');
 opts.train.batchSize = 256 ;
@@ -39,6 +39,7 @@ if ~opts.batchNormalization
   opts.train.learningRate = logspace(-2, -4, 60) ;
 else
   opts.train.learningRate = logspace(-1, -4, 20) ;
+  opts.train.learningRate(9:20) = opts.train.learningRate(9:20) ./ 5;
 end
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
