@@ -157,12 +157,13 @@ for epoch=start+1:opts.numEpochs
     end
     
   end
-   pred_val_table = sortrows(cell2table(pred_val));
-   pred_test_table = sortrows(cell2table(pred_test));
-   fval = fullfile(opts.expDir, sprintf('val-predictions-%d', epoch));
-   ftest = fullfile(opts.expDir, sprintf('test-predictions-%d', epoch));
-   write(pred_val_table, fval, 'WriteVariableNames', 0, 'Delimiter', ' ');
-   write(pred_test_table, ftest, 'WriteVariableNames', 0, 'Delimiter', ' ');
+%    pred_val_table = sortrows(cell2table(pred_val));
+%    pred_test_table = sortrows(cell2table(pred_test));
+%    fval = fullfile(opts.expDir, sprintf('val-predictions-%d', epoch));
+%    ftest = fullfile(opts.expDir, sprintf('test-predictions-%d', epoch));
+%    write(pred_val_table, fval, 'WriteVariableNames', 0, 'Delimiter', ' ');
+%    write(pred_test_table, ftest, 'WriteVariableNames', 0, 'Delimiter', ' ');
+    
    
   % save
   if evaluateMode, sets = {'val'} ; else sets = {'train', 'val', 'test'} ; end
@@ -319,18 +320,29 @@ for t=1:opts.batchSize:numel(subset)
       sum(double(gather(res(end).x))) ;
       reshape(opts.errorFunction(opts, labels, res),[],1) ; ]],2) ;
     
-    % If test or val mode, save test results to disk
+    % If test/val mode, save results to disk eventually
     if learningRate <= 0
         predictions = gather(res(end-1).x) ;
-        [~,predictions] = sort(predictions, 3, 'descend') ;
         psize = size(predictions);
-        predictions = reshape(predictions, [psize(3), psize(4)]);
-        predictions = predictions - 1;
-        top_predictions = reshape(predictions(1:5,:)', [5*psize(4), 1]);
-        top_predictions_cell = num2cell(top_predictions);
-        % batch stores indices of images from imdb.images ordering
+        presh = reshape(predictions, [psize(3), psize(4)]);
         imdb_names = imdb.images.name(batch)';
-	results = reshape([imdb_names ; top_predictions_cell], [psize(4), 6]) ;
+        numIms = numel(imdb_names);
+        numAugs = psize(4) / numIms;
+        
+        if numAugs > 1
+            pave = zeros(psize(3), numIms);
+            for i=1:numIms
+                pave(:,i) = mean(presh(:,1+(i-1)*numAugs:i*numAugs), 2);
+            end
+            presh = pave;
+        end
+        predictions4D = reshape(presh, [1 1 psize(3) numIms]);
+        [~,predictions] = sort(predictions4D, 3, 'descend') ;
+        predictions = reshape(predictions, [psize(3) numIms]);
+        predictions = predictions - 1;
+        top_predictions = predictions(1:5,:)';
+        top_predictions_cell = reshape(num2cell(top_predictions), [numIms*5 1]);
+        results = reshape([imdb_names ; top_predictions_cell], [numIms, 6]) ;
         all_results(end+1:end+1+numel(batch)-1,:) = results;
     end
     
