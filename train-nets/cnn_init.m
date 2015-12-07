@@ -484,9 +484,9 @@ net = add_block(net, opts, '4', 3, 3, 128, 128, 1, 1);
 %                           'pad', 0) ;
                        
 net.layers{end+1} = struct('type', 'dropout', ...
-                             'name', sprintf('dropout%s', id), ...
+                             'name', sprintf('dropout%s', '7'), ...
                              'rate', 0.2) ;
-
+    
 net = add_block(net, opts, '5', 6, 6, 128, 512, 1, 0) ;
                          
 net = add_block(net, opts, '6', 1, 1, 512, 100, 1, 0) ;
