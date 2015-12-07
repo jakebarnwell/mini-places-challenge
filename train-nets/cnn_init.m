@@ -18,6 +18,9 @@ switch opts.model
   case 'refNet2'
     net.normalization.imageSize = [126, 126, 3] ;
     net = refNet2(net, opts)
+  case 'refNet3'
+    net.normalization.imageSize = [126, 126, 3] ;
+    net = refNet3(net, opts)
   case 'alexnet'
     net.normalization.imageSize = [227, 227, 3] ;
     net = alexnet(net, opts) ;
