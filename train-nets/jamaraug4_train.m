@@ -94,7 +94,7 @@ useGpu = numel(opts.train.gpus) > 0 ;
 
 %  getBatchSimpleNNWrapper, cnn_train stuff
 fn = getBatchSimpleNNWrapper(bopts) ;
-[net,info] = cnn_train(net, imdb, fn, opts.train, 'conserveMemory', true) ;
+[net,info] = cnn_train_better(net, imdb, fn, opts.train, 'conserveMemory', true) ;
 
 % -------------------------------------------------------------------------
 function fn = getBatchSimpleNNWrapper(opts)
