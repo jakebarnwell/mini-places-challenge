@@ -1,1 +1,13 @@
 10:45 Added forced dropout and xavierimproved weights to net, previous error "Your top-5 error is 0.353 and top-1 error is 0.651."
+
+Ideas: 
+
+Average pooling - why?
+Prelu
+Changing learning rate and momentum
+Increasing channels
+Larger augmentations, rotations (few degrees)
+Jittering images with noise
+Add inputs with frequencies, fourier transform, power spectrum
+L1, L2 regularization
+Sub-batches?
