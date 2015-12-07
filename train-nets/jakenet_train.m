@@ -11,7 +11,7 @@ run(fullfile(fileparts(mfilename('fullpath')), ...
 
 % Contains our images/objects etc
 opts.dataDir = fullfile('..','data') ;
-opts.modelType = 'jakenet' ;
+opts.modelType = 'refNet2' ;
 opts.networkType = 'simplenn' ;
 opts.batchNormalization = true ;
 opts.weightInitMethod = 'xavierimproved' ;
