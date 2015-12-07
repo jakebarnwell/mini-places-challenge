@@ -11,3 +11,4 @@ Jittering images with noise
 Add inputs with frequencies, fourier transform, power spectrum
 L1, L2 regularization
 Sub-batches?
+Euclidean loss
