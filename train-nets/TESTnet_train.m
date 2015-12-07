@@ -104,9 +104,9 @@ fn = @(imdb,batch) getBatchSimpleNN(imdb,batch,opts) ;
 function [im,labels] = getBatchSimpleNN(imdb, batch, opts)
 % -------------------------------------------------------------------------
 images = strcat([imdb.imageDir filesep], imdb.images.name(batch)) ;
-im = get_batch_aug2(images, opts, ...
+im = get_batch(images, opts, ...
                             'prefetch', nargout == 0) ;
-labels = kron(imdb.images.label(batch), ones(1, 2));
+labels = kron(imdb.images.label(batch), ones(1, 1));
 
 % -------------------------------------------------------------------------
 function [averageImage, rgbMean, rgbCovariance] = getImageStats(imdb, opts)

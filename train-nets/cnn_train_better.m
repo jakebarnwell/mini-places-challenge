@@ -157,12 +157,12 @@ for epoch=start+1:opts.numEpochs
     end
     
   end
-%    pred_val_table = sortrows(cell2table(pred_val));
-%    pred_test_table = sortrows(cell2table(pred_test));
-%    fval = fullfile(opts.expDir, sprintf('val-predictions-%d', epoch));
-%    ftest = fullfile(opts.expDir, sprintf('test-predictions-%d', epoch));
-%    write(pred_val_table, fval, 'WriteVariableNames', 0, 'Delimiter', ' ');
-%    write(pred_test_table, ftest, 'WriteVariableNames', 0, 'Delimiter', ' ');
+   pred_val_table = sortrows(cell2table(pred_val));
+   pred_test_table = sortrows(cell2table(pred_test));
+   fval = fullfile(opts.expDir, sprintf('val-predictions-%d', epoch));
+   ftest = fullfile(opts.expDir, sprintf('test-predictions-%d', epoch));
+   write(pred_val_table, fval, 'WriteVariableNames', 0, 'Delimiter', ' ');
+   write(pred_test_table, ftest, 'WriteVariableNames', 0, 'Delimiter', ' ');
     
    
   % save
