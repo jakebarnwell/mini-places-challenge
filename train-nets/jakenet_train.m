@@ -1,4 +1,4 @@
-function jamardropout_train(varargin)
+function jakenet_train(varargin)
 % REFNET1_TRAIN_IMAGENET  Copies the style of cnn_imagenet
 %   This tries to train the miniplaces competition net
 
@@ -11,7 +11,7 @@ run(fullfile(fileparts(mfilename('fullpath')), ...
 
 % Contains our images/objects etc
 opts.dataDir = fullfile('..','data') ;
-opts.modelType = 'refNet3' ;
+opts.modelType = 'jakenet' ;
 opts.networkType = 'simplenn' ;
 opts.batchNormalization = true ;
 opts.weightInitMethod = 'xavierimproved' ;
@@ -19,7 +19,7 @@ opts.weightInitMethod = 'xavierimproved' ;
 
 sfx = opts.modelType ;
 if opts.batchNormalization, sfx = [sfx '-bnorm'] ; end
-opts.expDir = fullfile(opts.dataDir, 'jamardropout', ...
+opts.expDir = fullfile(opts.dataDir, 'jakenet', ...
     sprintf('refnet-%s-%s', sfx, opts.networkType)) ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
@@ -38,8 +38,10 @@ opts.train.expDir = opts.expDir ;
 if ~opts.batchNormalization
   opts.train.learningRate = logspace(-2, -4, 60) ;
 else
-  opts.train.learningRate = logspace(-1, -4, 20) ;
-  opts.train.learningRate(9:20) = opts.train.learningRate(9:20) ./ 5;
+  rate = logspace(-1, -4, 20) ;
+  factors = [3, 2, 2, 2, 2, 1.5, 1.5, 1, 1, 1, ...
+             0.8, 0.6, 0.4, 0.2, 0.2, 0.2, 0.1, 0.1, 0.1, 0.1];
+  opts.train.learningRate = rate ./ factors;
 end
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
