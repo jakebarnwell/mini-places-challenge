@@ -36,7 +36,7 @@ opts.train.sync = false ;
 opts.train.cudnn = true ;
 opts.train.expDir = opts.expDir ;
 
-opts.numAugments = 4;
+opts.numAugments = 1;
 
 if ~opts.batchNormalization
   opts.train.learningRate = logspace(-2, -4, 60) ;
