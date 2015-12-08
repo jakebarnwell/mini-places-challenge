@@ -19,7 +19,7 @@ fetch = numel(images) >= 1 && ischar(images{1}) ;
 
 % prefetch is used to load images in a separate thread
 prefetch = fetch & opts.prefetch ;
-fprintf('numAugments = %d\n', opts.numAugments);
+
 if prefetch
   vl_imreadjpeg(images, 'numThreads', opts.numThreads, 'prefetch') ;
   imo = [] ;
