@@ -501,7 +501,7 @@ function net = refNet4(net, opts)
 % 3 convnet + 1 FC + 1 softmax
 % --------------------------------------------------------------------
 %% add_block(net, opts, id, h, w, in, out, stride, pad, init_bias)
-fprintf('Initializing net refNet3')
+fprintf('Initializing net refNet4')
 net.layers = {} ;
 
 net = add_block(net, opts, '1', 8, 8, 3, 64, 2, 0) ;

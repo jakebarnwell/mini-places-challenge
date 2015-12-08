@@ -1,4 +1,4 @@
-function jamardropout_train(varargin)
+function jamar7layer_train(varargin)
 % REFNET1_TRAIN_IMAGENET  Copies the style of cnn_imagenet
 %   This tries to train the miniplaces competition net
 
@@ -19,7 +19,7 @@ opts.weightInitMethod = 'xavierimproved' ;
 
 sfx = opts.modelType ;
 if opts.batchNormalization, sfx = [sfx '-bnorm'] ; end
-opts.expDir = fullfile(opts.dataDir, 'jamardropout', ...
+opts.expDir = fullfile(opts.dataDir, 'jamar7', ...
     sprintf('refnet-%s-%s', sfx, opts.networkType)) ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
@@ -29,11 +29,13 @@ opts.imdbPath = fullfile(opts.expDir, 'imdb.mat');
 opts.train.batchSize = 256 ;
 opts.train.numSubBatches = 1 ;
 opts.train.continue = true ;
-% opts.train.gpus = [1, 2, 3, 4] ;
+opts.train.gpus = [1, 2, 3, 4] ;
 opts.train.prefetch = true ;
 opts.train.sync = false ;
 opts.train.cudnn = true ;
 opts.train.expDir = opts.expDir ;
+
+opts.numAugments = 4;
 
 if ~opts.batchNormalization
   opts.train.learningRate = logspace(-2, -4, 60) ;
@@ -67,6 +69,7 @@ net = cnn_init('model', opts.modelType, ...
                         'weightInitMethod', opts.weightInitMethod) ;
 bopts = net.normalization ;
 bopts.numThreads = opts.numFetchThreads ;
+bopts.numAugments = opts.numAugments;
 
 % compute image statistics (mean, RGB covariances etc)
 imageStatsPath = fullfile(opts.expDir, 'imageStats.mat') ;
@@ -90,6 +93,7 @@ net.normalization.averageImage = rgbMean ;
 bopts.transformation = 'stretch' ;
 bopts.averageImage = rgbMean ;
 bopts.rgbVariance = 0.1*sqrt(d)*v' ;
+bopts.numAugments = opts.numAugments;
 useGpu = numel(opts.train.gpus) > 0 ;
 
 %  getBatchSimpleNNWrapper, cnn_train stuff
@@ -107,7 +111,7 @@ function [im,labels] = getBatchSimpleNN(imdb, batch, opts)
 images = strcat([imdb.imageDir filesep], imdb.images.name(batch)) ;
 im = get_batch_flip(images, opts, ...
                             'prefetch', nargout == 0) ;
-labels = kron(imdb.images.label(batch), ones(1, 4));
+labels = kron(imdb.images.label(batch), ones(1, opts.numAugments));
 
 % -------------------------------------------------------------------------
 function [averageImage, rgbMean, rgbCovariance] = getImageStats(imdb, opts)
