@@ -43,7 +43,7 @@ else
   rate = logspace(-1, -4, 20) ;
   factors = [3, 2, 2, 2, 2, 1.5, 1.5, 1, 1, 1, ...
              0.8, 0.6, 0.4, 0.2, 0.2, 0.2, 0.1, 0.1, 0.1, 0.1];
-  opts.train.learningRate = rate ./ factors;
+  opts.train.learningRate = rate .* factors;
 end
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
