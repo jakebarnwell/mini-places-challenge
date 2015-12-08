@@ -16,4 +16,7 @@ error_cls = eval_cls(pred_file,ground_truth_file,1:num_predictions_per_image);
 disp('# guesses vs cls error');
 disp([(1:num_predictions_per_image)',error_cls']);
 
+disp('# guesses vs cls accuracy');
+disp([(1:num_predictions_per_image)',1-error_cls']);
+
 

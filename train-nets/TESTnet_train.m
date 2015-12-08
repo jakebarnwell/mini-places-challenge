@@ -35,6 +35,9 @@ opts.train.prefetch = true ;
 opts.train.sync = false ;
 opts.train.cudnn = true ;
 opts.train.expDir = opts.expDir ;
+
+opts.numAugments = 4;
+
 if ~opts.batchNormalization
   opts.train.learningRate = logspace(-2, -4, 60) ;
 else
@@ -66,6 +69,7 @@ net = cnn_init('model', opts.modelType, ...
                         'weightInitMethod', opts.weightInitMethod) ;
 bopts = net.normalization ;
 bopts.numThreads = opts.numFetchThreads ;
+bopts.numAugments = opts.numAugments ;
 
 % compute image statistics (mean, RGB covariances etc)
 imageStatsPath = fullfile(opts.expDir, 'imageStats.mat') ;
@@ -89,6 +93,7 @@ net.normalization.averageImage = rgbMean ;
 bopts.transformation = 'stretch' ;
 bopts.averageImage = rgbMean ;
 bopts.rgbVariance = 0.1*sqrt(d)*v' ;
+bopts.numAugments = opts.numAugments ;
 useGpu = numel(opts.train.gpus) > 0 ;
 
 %  getBatchSimpleNNWrapper, cnn_train stuff
@@ -104,9 +109,9 @@ fn = @(imdb,batch) getBatchSimpleNN(imdb,batch,opts) ;
 function [im,labels] = getBatchSimpleNN(imdb, batch, opts)
 % -------------------------------------------------------------------------
 images = strcat([imdb.imageDir filesep], imdb.images.name(batch)) ;
-im = get_batch(images, opts, ...
+im = get_batch_flip(images, opts, ...
                             'prefetch', nargout == 0) ;
-labels = kron(imdb.images.label(batch), ones(1, 1));
+labels = kron(imdb.images.label(batch), ones(1, opts.numAugments));
 
 % -------------------------------------------------------------------------
 function [averageImage, rgbMean, rgbCovariance] = getImageStats(imdb, opts)
