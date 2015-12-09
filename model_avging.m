@@ -1,4 +1,7 @@
-files = [fopen('test_results.txt'), fopen('test_results2.txt')];
+% PUT THE NAMES OF THE RESULTS FILES TO RUN HERE
+files = [fopen('nets/jakenet/test-predictions-20.txt'), ...
+    fopen('nets/jamar7/test-predictions-20.txt'), ...
+    fopen('nets/jakenet-aug4flip/test-predictions-20.txt')];
 num_models = length(files);
 
 output_file_id = fopen('avg_results.txt','w');
