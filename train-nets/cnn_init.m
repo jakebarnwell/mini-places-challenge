@@ -21,6 +21,9 @@ switch opts.model
   case 'refNet3'
     net.normalization.imageSize = [126, 126, 3] ;
     net = refNet3(net, opts)
+  case 'refNet4'
+    net.normalization.imageSize = [126, 126, 3] ;
+    net = refNet4(net, opts)
   case 'alexnet'
     net.normalization.imageSize = [227, 227, 3] ;
     net = alexnet(net, opts) ;
@@ -490,6 +493,51 @@ net.layers{end+1} = struct('type', 'dropout', ...
 net = add_block(net, opts, '5', 6, 6, 128, 512, 1, 0) ;
                          
 net = add_block(net, opts, '6', 1, 1, 512, 100, 1, 0) ;
+
+net.layers(end) = [] ;
+if opts.batchNormalization, net.layers(end) = [] ; end
+
+function net = refNet4(net, opts)
+% 3 convnet + 1 FC + 1 softmax
+% --------------------------------------------------------------------
+%% add_block(net, opts, id, h, w, in, out, stride, pad, init_bias)
+fprintf('Initializing net refNet4')
+net.layers = {} ;
+
+net = add_block(net, opts, '1', 8, 8, 3, 64, 2, 0) ;
+net = add_norm(net, opts, '1') ;
+net.layers{end+1} = struct('type', 'pool', 'name', 'pool1', ...
+                           'method', 'max', ...
+                           'pool', [3 3], ...
+                           'stride', 2, ...
+                           'pad', 0) ;
+
+
+net = add_block(net, opts, '2', 5, 5, 32, 96, 1, 2) ;
+net = add_norm(net, opts, '2') ;
+net.layers{end+1} = struct('type', 'pool', 'name', 'pool2', ...
+                           'method', 'max', ...
+                           'pool', [3 3], ...
+                           'stride', 2, ...
+                           'pad', 0) ;
+
+net = add_block(net, opts, '3', 3, 3, 96, 128, 1, 1) ;
+net.layers{end+1} = struct('type', 'pool', 'name', 'pool5', ...
+                           'method', 'max', ...
+                           'pool', [3 3], ...
+                           'stride', 2, ...
+                           'pad', 0) ;
+
+% Extra layer
+% function net = add_block(net, opts, id, h, w, in, out, stride, pad, init_bias)
+% No idea....
+net = add_block(net, opts, '4', 3, 3, 128, 128, 1, 1);
+    
+net = add_block(net, opts, '5', 6, 6, 128, 256, 1, 0) ;
+
+net = add_block(net, opts, '6', 3, 3, 256, 512, 1, 1);
+                         
+net = add_block(net, opts, '7', 1, 1, 512, 100, 1, 0) ;
 
 net.layers(end) = [] ;
 if opts.batchNormalization, net.layers(end) = [] ; end

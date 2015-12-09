@@ -4,7 +4,7 @@
 
 fprintf('MINI PLACES SCENE CLASSIFICATION CHALLENGE\n');
 
-pred_file='../../nets/jamar4aug/val-predictions-20.txt';
+pred_file='../../nets/jamar7/val-predictions-20.txt';
 ground_truth_file='../data/val.txt';
 num_predictions_per_image=5;
 
@@ -15,5 +15,8 @@ error_cls = eval_cls(pred_file,ground_truth_file,1:num_predictions_per_image);
 
 disp('# guesses vs cls error');
 disp([(1:num_predictions_per_image)',error_cls']);
+
+disp('# guesses vs cls accuracy');
+disp([(1:num_predictions_per_image)',1-error_cls']);
 
 
