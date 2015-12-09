@@ -155,14 +155,9 @@ for i=1:numel(images)
     % Add random noise to entire image:
     if ai == opts.numAugments
       risz = size(resized_image);
-      resized_image = resized_image + randi(9,risz(1),risz(2))-5
-      imo(:,:,:,si) = random_noise(resized_image);
+      imo(:,:,:,si) = resized_image + randn(risz)*5;
     end
 
     si = si + 1 ;
   end
-end
-
-define noiseIm = random_noise(cleanIm)
-noiseIm = cleanIm
 end
