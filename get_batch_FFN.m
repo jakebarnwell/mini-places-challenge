@@ -143,8 +143,9 @@ for i=1:numel(images)
       end
       imo(:,:,:,si) = bsxfun(@minus, imt(sy,sx,:), offset) ;
     else
-      imo(:,:,:,si) = im(:,:,:,si);
+      imo(:,:,:,si) = imt(sy,sx,:);
     end
+
     resized_image = imresize(this_image, [size(imo(:,:,:,si),1),size(imo(:,:,:,si),2)]);
     % Fourier of entire image:
     if ai == opts.numAugments-1
@@ -153,6 +154,8 @@ for i=1:numel(images)
 
     % Add random noise to entire image:
     if ai == opts.numAugments
+      risz = size(resized_image);
+      resized_image = resized_image + randi(9,risz(1),risz(2))-5
       imo(:,:,:,si) = random_noise(resized_image);
     end
 
