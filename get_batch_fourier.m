@@ -1,4 +1,4 @@
-function imo = get_batch_flip(images, varargin)
+function imo = get_batch_fourier(images, varargin)
 % CNN_IMAGENET_GET_BATCH  Load, preprocess, and pack images for CNN evaluation
 
 opts.imageSize = [227, 227] ;

@@ -19,7 +19,7 @@ opts.weightInitMethod = 'xavierimproved' ;
 
 sfx = opts.modelType ;
 if opts.batchNormalization, sfx = [sfx '-bnorm'] ; end
-opts.expDir = fullfile(opts.dataDir, 'jakenet-fourier4aug', ...
+opts.expDir = fullfile(opts.dataDir, 'jakenet-fourier4aug-2', ...
     sprintf('refnet-%s-%s', sfx, opts.networkType)) ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 

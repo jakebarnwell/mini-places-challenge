@@ -4,7 +4,7 @@
 
 fprintf('MINI PLACES SCENE CLASSIFICATION CHALLENGE\n');
 
-pred_file='../../nets/jakenet-aug4flip/val-predictions-30.txt';
+pred_file='../../nets/jakenet-aug8flip-refnet3/val-predictions-30.txt';
 ground_truth_file='../data/val.txt';
 num_predictions_per_image=5;
 
