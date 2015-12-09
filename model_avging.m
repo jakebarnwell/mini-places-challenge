@@ -1,14 +1,14 @@
 % PUT THE NAMES OF THE RESULTS FILES TO RUN HERE
-files = [fopen('nets/jakenet/test-predictions-20.txt'), ...
-    fopen('nets/jamar7/test-predictions-20.txt'), ...
-    fopen('nets/jakenet-aug4flip/test-predictions-20.txt')];
+files = [fopen('nets/jakenet/val-predictions-20.txt'), ...
+    fopen('nets/jamar7/val-predictions-20.txt'), ...
+    fopen('nets/jakenet-aug4flip/val-predictions-20.txt')];
 num_models = length(files);
 
 output_file_id = fopen('avg_results.txt','w');
 formatSpec = '%s %d %d %d %d %d\n';
 
 % WHETHER RUNNING ON VAL OR TEST SET, CHANGE THIS TO CHANGE WHAT RUNNING ON
-run_on_val_set = false;
+run_on_val_set = true;
 
 not_done = true;
 
