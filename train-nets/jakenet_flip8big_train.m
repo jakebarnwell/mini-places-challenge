@@ -11,7 +11,7 @@ run(fullfile(fileparts(mfilename('fullpath')), ...
 
 % Contains our images/objects etc
 opts.dataDir = fullfile('..','data') ;
-opts.modelType = 'refNet2' ;
+opts.modelType = 'refNet3' ;
 opts.networkType = 'simplenn' ;
 opts.batchNormalization = true ;
 opts.weightInitMethod = 'xavierimproved' ;
@@ -19,7 +19,7 @@ opts.weightInitMethod = 'xavierimproved' ;
 
 sfx = opts.modelType ;
 if opts.batchNormalization, sfx = [sfx '-bnorm'] ; end
-opts.expDir = fullfile(opts.dataDir, 'jakenet-flip8big-2', ...
+opts.expDir = fullfile(opts.dataDir, 'jakenet-flip8big-refnet3', ...
     sprintf('refnet-%s-%s', sfx, opts.networkType)) ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
