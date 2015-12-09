@@ -145,15 +145,15 @@ for i=1:numel(images)
     else
       imo(:,:,:,si) = im(:,:,:,si);
     end
-
+    resized_image = imresize(this_image, [size(imo(:,:,:,si),1),size(imo(:,:,:,si),2)]);
     % Fourier of entire image:
     if ai == opts.numAugments-1
-      imo(:,:,:,si) = fft2(this_image);
+      imo(:,:,:,si) = fft2(resized_image);
     end
 
     % Add random noise to entire image:
     if ai == opts.numAugments
-      imo(:,:,:,si) = random_noise(this_image);
+      imo(:,:,:,si) = random_noise(resized_image);
     end
 
     si = si + 1 ;
