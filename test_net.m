@@ -10,7 +10,7 @@ load('categoryIDX.mat');
 num_models = 1;
 
 % Trained CNN #1
-path_model = 'nets/refaug2-noBN/net-epoch-60.mat';
+path_model = 'nets/refaug-big8/net-epoch-60.mat';
 load([path_model]) ;
 disp(strcat('Loaded Model ', path_model));
 
